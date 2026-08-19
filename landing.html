@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Modus - Sequence Your Soul</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+
+<body class="font-body antialiased min-h-screen flex flex-col text-on-background">
+    <!-- TopNavBar Component -->
+    <nav class="bg-surface fixed top-0 w-full z-50 border-b-4 border-outline text-primary font-body text-base">
+        <div class="flex justify-between items-center px-gutter py-sm max-w-container-max mx-auto">
+            <div class="flex items-center gap-md">
+                <div class="brutal-border p-1 bg-surface-container-lowest">
+                    <img alt="Modus Logo" class="h-8 w-8 object-cover" src="static/logo.png">
+                </div>
+                <span class="font-display text-2xl font-bold tracking-tighter text-primary">Modus</span>
+            </div>
+            <button
+                class="bg-primary text-on-primary border-2 border-outline px-md py-sm font-label font-bold uppercase shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+                Get Started
+            </button>
+        </div>
+    </nav>
+    <main class="flex-grow pt-24">
+        <!-- Hero Section -->
+        <section
+            class="min-h-hero max-w-container-max mx-auto px-gutter py-xl flex flex-col lg:flex-row items-center justify-center gap-xl relative mb-32">
+            <div class="flex flex-col gap-md z-10 lg:w-1/3">
+                <h1
+                    class="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter uppercase text-primary">
+                    Sequence<br>Your Soul
+                </h1>
+                <p
+                    class="font-body text-lg text-on-surface-variant max-w-lg font-medium border-l-4 border-primary pl-4 py-2 bg-surface-container-high">
+                    Mood-based playlisting that reacts to your rhythm. Experience high-precision listening tailored to
+                    your current emotional state.
+                </p>
+                <div class="mt-md flex flex-wrap gap-md">
+                    <button
+                        class="bg-tertiary text-on-tertiary brutal-border px-lg py-sm font-label font-bold uppercase shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+                        Launch App
+                    </button>
+                    <button
+                        class="bg-surface-container-lowest text-primary brutal-border px-lg py-sm font-label font-bold uppercase shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all hover:bg-surface-container">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+            <div class="lg:w-2/3 w-full relative">
+                <div class="absolute inset-0 bg-secondary translate-x-4 translate-y-4 brutal-border z-0"></div>
+                <img alt="Bauhaus-inspired 3D render of a music sequencer with bold geometric shapes."
+                    class="relative z-10 w-full brutal-border bg-surface-container-lowest object-cover"
+                    src="static/hero_image.png">
+            </div>
+        </section>
+        <!-- Feature Spotlight: Mood Sequencer -->
+        <section class="bg-surface-container py-xl border-y-4 border-outline relative">
+            <!-- Background Grid Pattern -->
+            <div class="absolute inset-0 opacity-10 pointer-events-none"
+                style="background-image: linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px); background-size: 24px 24px;">
+            </div>
+            <div class="max-w-container-max mx-auto px-gutter relative z-10">
+                <div
+                    class="text-center mb-xl border-4 border-outline bg-surface-container-lowest p-lg shadow-brutal-lg max-w-3xl mx-auto">
+                    <h2 class="font-headline text-3xl md:text-4xl font-bold uppercase mb-sm">The Mood Sequencer</h2>
+                    <p class="font-body text-lg text-on-surface-variant font-medium">
+                        Dial in your exact vibe. Our advanced algorithms analyze tempo, key, and sonic texture to curate
+                        the perfect playlist.
+                    </p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-lg items-center justify-center">
+                    <!-- Conceptual UI -->
+                    <div
+                        class="bg-surface-container-lowest brutal-border p-md w-full max-w-md flex flex-col gap-md shadow-brutal-lg">
+                        <div class="flex justify-between items-center border-b-2 border-outline pb-sm">
+                            <span class="font-label font-bold uppercase text-on-surface-variant">Preset</span>
+                            <div
+                                class="bg-primary text-on-primary brutal-border px-sm py-xs flex items-center gap-xs cursor-pointer shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+                                <span class="font-label font-bold uppercase">Mellow</span>
+                                <span class="material-symbols-outlined text-sm"
+                                    style="font-variation-settings: 'FILL' 0;">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-sm">
+                            <!-- Song Item -->
+                            <div
+                                class="flex items-center justify-between p-sm border-2 border-outline bg-surface hover:bg-primary-container transition-colors group/item">
+                                <div class="flex items-center gap-sm">
+                                    <div
+                                        class="w-10 h-10 border-2 border-outline bg-surface-container-lowest flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary"
+                                            style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-body font-bold text-on-surface">Midnight Drift</span>
+                                        <span
+                                            class="font-label text-xs uppercase font-bold text-on-surface-variant">Artist
+                                            Name</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <span class="font-label text-xs font-bold text-secondary uppercase">85 BPM</span>
+                                    <div
+                                        class="w-16 h-2 border-2 border-outline bg-surface-container-lowest overflow-hidden">
+                                        <div class="h-full bg-secondary w-3/4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Song Item 2 -->
+                            <div
+                                class="flex items-center justify-between p-sm border-2 border-outline bg-surface hover:bg-tertiary-container transition-colors group/item">
+                                <div class="flex items-center gap-sm">
+                                    <div
+                                        class="w-10 h-10 border-2 border-outline bg-surface-container-lowest flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary"
+                                            style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-body font-bold text-on-surface">Echoes of Slate</span>
+                                        <span
+                                            class="font-label text-xs uppercase font-bold text-on-surface-variant">Producer
+                                            X</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <span class="font-label text-xs font-bold text-tertiary uppercase">72 BPM</span>
+                                    <div
+                                        class="w-16 h-2 border-2 border-outline bg-surface-container-lowest overflow-hidden">
+                                        <div class="h-full bg-tertiary w-full border-r-2 border-outline"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Presets Grid -->
+                    <div class="grid grid-cols-2 gap-md w-full max-w-sm">
+                        <button
+                            class="bg-surface-container-lowest brutal-border p-md text-left flex flex-col gap-sm shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all hover:bg-surface-container">
+                            <span
+                                class="font-label font-bold uppercase text-on-primary bg-secondary brutal-border px-sm py-xs w-max">Focus</span>
+                            <span class="font-body font-medium text-sm text-on-surface">Deep concentration flows.</span>
+                        </button>
+                        <button
+                            class="bg-surface-container-lowest brutal-border p-md text-left flex flex-col gap-sm shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all hover:bg-surface-container">
+                            <span
+                                class="font-label font-bold uppercase text-on-primary bg-error brutal-border px-sm py-xs w-max">Hype</span>
+                            <span class="font-body font-medium text-sm text-on-surface">High-energy rhythms.</span>
+                        </button>
+                        <button
+                            class="bg-primary-container brutal-border p-md text-left flex flex-col gap-sm shadow-brutal-lg">
+                            <span
+                                class="font-label font-bold uppercase text-on-primary bg-primary brutal-border px-sm py-xs w-max">Mellow</span>
+                            <span class="font-body font-bold text-sm text-on-surface">Relaxed, downtempo vibes.</span>
+                        </button>
+                        <button
+                            class="bg-surface-container-lowest brutal-border p-md text-left flex flex-col gap-sm shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none transition-all hover:bg-surface-container">
+                            <span
+                                class="font-label font-bold uppercase text-on-primary bg-tertiary brutal-border px-sm py-xs w-max">Chill</span>
+                            <span class="font-body font-medium text-sm text-on-surface">Ambient background
+                                spaces.</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Trust Section -->
+        <section class="w-full bg-primary-container border-b-4 border-outline py-xl">
+            <div class="max-w-container-max mx-auto px-gutter text-center">
+                <h3 class="font-display text-2xl md:text-4xl font-bold text-on-primary-container tracking-widest uppercase">
+                    Engineered for high-precision listening.
+                </h3>
+            </div>
+        </section>
+    </main>
+    <!-- Footer Component -->
+    <footer class="bg-surface text-primary font-label w-full py-xl border-t-4 border-outline">
+        <div
+            class="flex flex-col md:flex-row justify-between items-center px-gutter max-w-container-max mx-auto gap-md">
+            <div class="brutal-border p-1 bg-surface-container-lowest shadow-brutal">
+                <img alt="Modus Logo" class="h-10 w-10 object-cover" src="static/logo.png">
+            </div>
+            <div class="flex flex-wrap justify-center gap-md font-bold uppercase">
+                <a class="text-on-surface hover:text-tertiary transition-colors" href="#">Privacy</a>
+                <a class="text-on-surface hover:text-tertiary transition-colors" href="#">Terms</a>
+                <a class="text-on-surface hover:text-tertiary transition-colors" href="#">Support</a>
+                <a class="text-on-surface hover:text-tertiary transition-colors" href="#">Twitter</a>
+                <a class="text-on-surface hover:text-tertiary transition-colors" href="#">Instagram</a>
+            </div>
+            <div
+                class="text-on-surface font-body font-bold text-sm border-2 border-outline px-3 py-1 bg-surface-container-lowest">
+                © 2026 @Modus
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

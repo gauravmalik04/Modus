@@ -1,0 +1,418 @@
+/* ==========================================================================
+   MODUS - LANDING PAGE STYLESHEET
+   Pure CSS conversion of Tailwind CSS configuration and utilities
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS & CSS VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colors - Material / Neobrutalism Palette */
+  --color-primary: #1a1a1a;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffcc00;
+  --color-on-primary-container: #1a1a1a;
+  --color-primary-fixed: #ffcc00;
+  --color-primary-fixed-dim: #e6b800;
+  --color-on-primary-fixed: #1a1a1a;
+  --color-on-primary-fixed-variant: #1a1a1a;
+
+  --color-secondary: #e63b2e;
+  --color-on-secondary: #1a1a1a;
+  --color-secondary-container: #ffdad6;
+  --color-on-secondary-container: #1a1a1a;
+  --color-secondary-fixed: #ffdad6;
+  --color-secondary-fixed-dim: #ffb3ab;
+  --color-on-secondary-fixed: #1a1a1a;
+  --color-on-secondary-fixed-variant: #1a1a1a;
+
+  --color-tertiary: #0055ff;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #d6e3ff;
+  --color-on-tertiary-container: #1a1a1a;
+  --color-tertiary-fixed: #d6e3ff;
+  --color-tertiary-fixed-dim: #a8c6ff;
+  --color-on-tertiary-fixed: #1a1a1a;
+  --color-on-tertiary-fixed-variant: #1a1a1a;
+
+  --color-error: #cc0000;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-background: #f5f0e8;
+  --color-on-background: #1a1a1a;
+
+  --color-surface: #f5f0e8;
+  --color-on-surface: #1a1a1a;
+  --color-surface-variant: #e8e3da;
+  --color-on-surface-variant: #4a4a4a;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2ede5;
+  --color-surface-container: #eee9e0;
+  --color-surface-container-high: #e8e3da;
+  --color-surface-container-highest: #e2ddd4;
+  --color-surface-bright: #faf7f2;
+  --color-surface-dim: #d6d1c9;
+  --color-surface-tint: #1a1a1a;
+
+  --color-outline: #1a1a1a;
+  --color-outline-variant: #d0cbc3;
+  --color-inverse-surface: #1a1a1a;
+  --color-inverse-on-surface: #f5f0e8;
+  --color-inverse-primary: #f5f0e8;
+
+  /* Typography */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
+
+  /* Spacing Tokens */
+  --spacing-xs: 4px;
+  --spacing-base: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+  --spacing-gutter: 24px;
+  --spacing-container-max: 1280px;
+
+  /* Border Radius */
+  --radius-default: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  /* Shadows (Brutalist) */
+  --shadow-brutal: 4px 4px 0px 0px #1a1a1a;
+  --shadow-brutal-lg: 8px 8px 0px 0px #1a1a1a;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE STYLES
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   3. NEOBRUTALISM CUSTOM UTILITIES
+   -------------------------------------------------------------------------- */
+.brutal-border {
+  border: 2px solid var(--color-outline);
+}
+
+.shadow-brutal {
+  box-shadow: var(--shadow-brutal);
+}
+
+.shadow-brutal-lg {
+  box-shadow: var(--shadow-brutal-lg);
+}
+
+/* Active press animation for brutalist buttons */
+.active\:translate-x-1:active {
+  transform: translateX(4px);
+}
+
+.active\:translate-y-1:active {
+  transform: translateY(4px);
+}
+
+.active\:translate-x-1.active\:translate-y-1:active {
+  transform: translate(4px, 4px);
+}
+
+.active\:shadow-none:active {
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. TYPOGRAPHY UTILITIES
+   -------------------------------------------------------------------------- */
+.font-headline { font-family: var(--font-headline); }
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.font-label { font-family: var(--font-label); }
+
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-5xl { font-size: 3rem; line-height: 1; }
+
+.font-medium { font-weight: 500; }
+.font-bold { font-weight: 700; }
+
+.uppercase { text-transform: uppercase; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+
+.tracking-tighter { letter-spacing: -0.05em; }
+.tracking-widest { letter-spacing: 0.1em; }
+
+/* --------------------------------------------------------------------------
+   5. COLOR UTILITIES
+   -------------------------------------------------------------------------- */
+/* Text Colors */
+.text-primary { color: var(--color-primary); }
+.text-on-primary { color: var(--color-on-primary); }
+.text-on-primary-container { color: var(--color-on-primary-container); }
+.text-secondary { color: var(--color-secondary); }
+.text-tertiary { color: var(--color-tertiary); }
+.text-on-tertiary { color: var(--color-on-tertiary); }
+.text-on-surface { color: var(--color-on-surface); }
+.text-on-surface-variant { color: var(--color-on-surface-variant); }
+.text-on-background { color: var(--color-on-background); }
+
+/* Background Colors */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-container { background-color: var(--color-primary-container); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-tertiary { background-color: var(--color-tertiary); }
+.bg-error { background-color: var(--color-error); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-container { background-color: var(--color-surface-container); }
+.bg-surface-container-high { background-color: var(--color-surface-container-high); }
+.bg-surface-container-lowest { background-color: var(--color-surface-container-lowest); }
+
+/* Hover States */
+.hover\:text-primary:hover { color: var(--color-primary); }
+.hover\:text-tertiary:hover { color: var(--color-tertiary); }
+.hover\:bg-surface-container:hover { background-color: var(--color-surface-container); }
+.hover\:bg-primary-container:hover { background-color: var(--color-primary-container); }
+.hover\:bg-tertiary-container:hover { background-color: var(--color-tertiary-container); }
+
+/* --------------------------------------------------------------------------
+   6. BORDERS & OUTLINES
+   -------------------------------------------------------------------------- */
+.border-2 { border-width: 2px; border-style: solid; }
+.border-4 { border-width: 4px; border-style: solid; }
+.border-b-2 { border-bottom-width: 2px; border-bottom-style: solid; }
+.border-b-4 { border-bottom-width: 4px; border-bottom-style: solid; }
+.border-t-4 { border-top-width: 4px; border-top-style: solid; }
+.border-l-4 { border-left-width: 4px; border-left-style: solid; }
+.border-r-2 { border-right-width: 2px; border-right-style: solid; }
+.border-y-4 {
+  border-top-width: 4px;
+  border-top-style: solid;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+}
+
+.border-outline { border-color: var(--color-outline); }
+.border-primary { border-color: var(--color-primary); }
+
+/* --------------------------------------------------------------------------
+   7. LAYOUT & FLEXBOX / GRID
+   -------------------------------------------------------------------------- */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-grow { flex-grow: 1; }
+
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+
+.hidden { display: none; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.top-0 { top: 0; }
+
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-50 { z-index: 50; }
+
+.pointer-events-none { pointer-events: none; }
+.overflow-hidden { overflow: hidden; }
+.object-cover { object-fit: cover; }
+.cursor-pointer { cursor: pointer; }
+
+/* --------------------------------------------------------------------------
+   8. SIZING & SPACING
+   -------------------------------------------------------------------------- */
+/* Width & Height */
+.w-full { width: 100%; }
+.w-max { width: max-content; }
+.w-8 { width: 2rem; }
+.h-8 { height: 2rem; }
+.w-10 { width: 2.5rem; }
+.h-10 { height: 2.5rem; }
+.w-16 { width: 4rem; }
+.h-2 { height: 0.5rem; }
+.w-3\/4 { width: 75%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+.min-h-hero { min-height: calc(100vh - 6rem); }
+
+/* Max Width */
+.max-w-container-max { max-width: var(--spacing-container-max); }
+.max-w-lg { max-width: 32rem; }
+.max-w-3xl { max-width: 48rem; }
+.max-w-md { max-width: 28rem; }
+.max-w-sm { max-width: 24rem; }
+
+/* Margins */
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+.mt-24 { margin-top: 6rem; }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+.mb-24 { margin-bottom: 6rem; }
+.mb-32 { margin-bottom: 8rem; }
+.mb-40 { margin-bottom: 10rem; }
+
+/* Paddings */
+.p-1 { padding: 0.25rem; }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-sm { padding: var(--spacing-sm); }
+
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-gutter { padding-left: var(--spacing-gutter); padding-right: var(--spacing-gutter); }
+.px-sm { padding-left: var(--spacing-sm); padding-right: var(--spacing-sm); }
+.px-md { padding-left: var(--spacing-md); padding-right: var(--spacing-md); }
+.px-lg { padding-left: var(--spacing-lg); padding-right: var(--spacing-lg); }
+
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-xs { padding-top: var(--spacing-xs); padding-bottom: var(--spacing-xs); }
+.py-sm { padding-top: var(--spacing-sm); padding-bottom: var(--spacing-sm); }
+.py-md { padding-top: var(--spacing-md); padding-bottom: var(--spacing-md); }
+.py-lg { padding-top: var(--spacing-lg); padding-bottom: var(--spacing-lg); }
+.py-xl { padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl); }
+
+.pl-4 { padding-left: 1rem; }
+.pb-1 { padding-bottom: 0.25rem; }
+.pb-sm { padding-bottom: var(--spacing-sm); }
+.pb-xl { padding-bottom: var(--spacing-xl); }
+.pt-16 { padding-top: 4rem; }
+.pt-20 { padding-top: 5rem; }
+.pt-24 { padding-top: 6rem; }
+
+/* Gaps */
+.gap-xs { gap: var(--spacing-xs); }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+.gap-xl { gap: var(--spacing-xl); }
+
+/* --------------------------------------------------------------------------
+   9. TRANSFORMS & TRANSITIONS
+   -------------------------------------------------------------------------- */
+.translate-x-4 { transform: translateX(1rem); }
+.translate-y-4 { transform: translateY(1rem); }
+.translate-x-4.translate-y-4 { transform: translate(1rem, 1rem); }
+
+.opacity-10 { opacity: 0.1; }
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+/* --------------------------------------------------------------------------
+   10. RESPONSIVE MEDIA QUERIES
+   -------------------------------------------------------------------------- */
+/* Medium screens (Tablet / Desktop - min-width: 768px) */
+@media (min-width: 768px) {
+  .md\:flex {
+    display: flex;
+  }
+  .md\:flex-row {
+    flex-direction: row;
+  }
+  .md\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  .md\:text-6xl {
+    font-size: 3.75rem;
+    line-height: 1;
+  }
+}
+
+/* Large screens (Desktop - min-width: 1024px) */
+@media (min-width: 1024px) {
+  .lg\:flex-row {
+    flex-direction: row;
+  }
+  .lg\:w-1\/3 {
+    width: 33.333333%;
+  }
+  .lg\:w-2\/3 {
+    width: 66.666667%;
+  }
+  .lg\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+}
