@@ -1,2 +1,2 @@
 # Modus
-A mood based, smooth transitioning music player.
+A mood-based, seamless transitioning music player with an intuitive interface for crafting personalized sonic journeys.
