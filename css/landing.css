@@ -199,6 +199,7 @@ button {
 .text-secondary { color: var(--color-secondary); }
 .text-tertiary { color: var(--color-tertiary); }
 .text-on-tertiary { color: var(--color-on-tertiary); }
+.text-error { color: var(--color-error); }
 .text-on-surface { color: var(--color-on-surface); }
 .text-on-surface-variant { color: var(--color-on-surface-variant); }
 .text-on-background { color: var(--color-on-background); }
@@ -207,8 +208,11 @@ button {
 .bg-primary { background-color: var(--color-primary); }
 .bg-primary-container { background-color: var(--color-primary-container); }
 .bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-container { background-color: var(--color-secondary-container); }
 .bg-tertiary { background-color: var(--color-tertiary); }
+.bg-tertiary-container { background-color: var(--color-tertiary-container); }
 .bg-error { background-color: var(--color-error); }
+.bg-error-container { background-color: var(--color-error-container); }
 .bg-surface { background-color: var(--color-surface); }
 .bg-surface-container { background-color: var(--color-surface-container); }
 .bg-surface-container-high { background-color: var(--color-surface-container-high); }
@@ -219,7 +223,9 @@ button {
 .hover\:text-tertiary:hover { color: var(--color-tertiary); }
 .hover\:bg-surface-container:hover { background-color: var(--color-surface-container); }
 .hover\:bg-primary-container:hover { background-color: var(--color-primary-container); }
+.hover\:bg-secondary-container:hover { background-color: var(--color-secondary-container); }
 .hover\:bg-tertiary-container:hover { background-color: var(--color-tertiary-container); }
+.hover\:bg-error-container:hover { background-color: var(--color-error-container); }
 
 /* --------------------------------------------------------------------------
    6. BORDERS & OUTLINES
@@ -377,6 +383,32 @@ button {
 
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.sequencer-track-meter-fill {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
+}
+
+.sequencer-track-item {
+  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.15s ease;
+}
+
+.sequencer-track-item.track-swap-out {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+.sequencer-track-item.track-swap-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Preset Buttons Uniform Active Styling */
+.sequencer-preset-card.sequencer-preset-card-active,
+.sequencer-preset-card.sequencer-preset-card-active:hover {
+  background-color: var(--color-primary-container) !important;
+  box-shadow: var(--shadow-brutal-lg) !important;
+  transform: none !important;
 }
 
 /* --------------------------------------------------------------------------
