@@ -3,3 +3,6 @@ folder_structure.md
 landing_proto.html
 landing_proto.css
 tests/
+.env
+.env*.local
+node_modules/
