@@ -127,13 +127,45 @@
 
     /* Mood-reactive background on Now-Playing panel */
     #now-playing-panel { transition: background-color 0.4s ease; }
+
+    /* Side-by-side layout */
+    .player-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        min-height: calc(100vh - 80px); /* viewport minus navbar */
+    }
+    @media (min-width: 1024px) {
+        .player-layout {
+            grid-template-columns: 60% 40%;
+        }
+    }
+
+    /* Queue panel — scrollable, full height */
+    .queue-panel {
+        border-left: 0;
+        overflow-y: auto;
+    }
+    @media (min-width: 1024px) {
+        .queue-panel {
+            border-left: 4px solid #1a1a1a;
+            max-height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px; /* navbar height */
+        }
+    }
+
+    /* Thin scrollbar for queue */
+    .queue-panel::-webkit-scrollbar { width: 6px; }
+    .queue-panel::-webkit-scrollbar-track { background: #f5f0e8; }
+    .queue-panel::-webkit-scrollbar-thumb { background: #1a1a1a; }
 </style>
 </head>
 <body class="bg-background text-primary font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
 
 <!-- ── Standardized Navbar ─────────────────────────────────────────── -->
-<nav class="bg-background border-b-4 border-primary font-headline uppercase tracking-tighter font-black w-full top-0 z-50 sticky shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]">
-    <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
+<nav class="bg-background border-b-4 border-primary font-headline uppercase tracking-tighter font-black w-full top-0 z-50 sticky shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]" style="height:80px;">
+    <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto h-full">
         <!-- Brand -->
         <a id="player-back-link" href="playlist_view.html" class="text-2xl font-black tracking-tighter text-primary uppercase flex items-center gap-3 group" title="Back to Playlist">
             <div class="w-8 h-8 bg-surface-container-lowest brutal-border p-0.5 shadow-brutal transition-transform group-active:translate-x-1 group-active:translate-y-1 group-active:shadow-none flex items-center justify-center">
@@ -151,98 +183,105 @@
     </div>
 </nav>
 
-<!-- ── Main ────────────────────────────────────────────────────────── -->
-<main class="flex-grow container mx-auto px-4 md:px-6 py-10 md:py-16 max-w-6xl">
+<!-- ── Main — Side-by-side: Player (60%) | Queue (40%) ─────────────── -->
+<div class="player-layout flex-grow">
 
-    <!-- Now Playing Panel -->
-    <div id="now-playing-panel" class="brutal-border shadow-brutal-lg p-6 md:p-10 mb-16" style="background-color:#0055ff;">
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <!-- LEFT: Player Panel -->
+    <main class="px-4 md:px-8 py-8 md:py-12 flex flex-col">
 
-            <!-- Album Art -->
-            <div class="relative flex justify-center items-center">
-                <div class="w-full aspect-square max-w-md brutal-border shadow-brutal-lg bg-white relative group overflow-hidden">
-                    <img id="player-artwork"
-                         class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
-                         src="https://lh3.googleusercontent.com/aida/AEtjO1V4AB5OzUkvLplMWNp6Q6wzxPYaG5iaOWz60ztUXJ1o0NYMX07U4eTaA9_tZrtZYVncq0kL0p8dxMyp0bknLUDhCu9-ITb9xBjbw2eZMbeYlszwsQEhB1SQc02lD0pU7mzO_BxHhS3nC6zOiMtZD2CuuBRDoa_3sx6tZAC6_uFz2jLR5GJjrQTF66Ur0aLNH9vqt-8WHbzppPhTgwGCb606bUt3dBqblxFQuSZ8QjpehoT_RjE9ZJ8-1-jd"
-                         alt="Album Artwork">
-                    <div class="absolute top-4 left-4 bg-primary-container brutal-border px-3 py-1 font-headline font-bold text-sm uppercase shadow-brutal text-primary">
-                        NOW PLAYING
-                    </div>
-                </div>
-            </div>
+        <!-- Now Playing Panel -->
+        <div id="now-playing-panel" class="brutal-border shadow-brutal-lg p-5 md:p-8 flex-grow flex flex-col justify-center" style="background-color:#0055ff;">
+            <section class="flex flex-col lg:flex-row gap-6 md:gap-10 items-center w-full max-w-4xl mx-auto">
 
-            <!-- Track Info & Controls -->
-            <div class="flex flex-col justify-center gap-6" style="color:#ffffff;">
-
-                <!-- Badges -->
-                <div class="flex items-center gap-4 flex-wrap">
-                    <span id="player-mood-badge" class="font-headline font-bold uppercase px-3 py-1 brutal-border-3 text-xs tracking-widest shadow-brutal inline-block" style="background-color:#ffcc00;color:#1a1a1a;">MS: —</span>
-                    <span id="player-genre" class="font-headline uppercase font-bold text-sm tracking-widest opacity-80">—</span>
-                </div>
-
-                <!-- Title / Artist -->
-                <div>
-                    <h1 id="player-track-title" class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none" style="color:#ffffff;">LOADING…</h1>
-                    <h2 id="player-artist" class="font-headline text-xl md:text-2xl font-bold uppercase tracking-tight mt-2" style="color:rgba(255,255,255,0.75);">—</h2>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="w-full mt-4">
-                    <div class="flex justify-between font-headline text-sm font-bold mb-2 px-1" style="color:rgba(255,255,255,0.85);">
-                        <span id="player-elapsed">0:00</span>
-                        <span id="player-total">0:00</span>
-                    </div>
-                    <div id="player-scrubber" class="w-full brutal-border-3 bg-white relative h-10" style="border-color:rgba(255,255,255,0.6);" title="Click to seek">
-                        <div id="player-progress-fill" class="absolute top-0 left-0 h-full bg-primary-container w-0 border-r-[3px] border-primary transition-none"></div>
-                        <div id="player-scrubber-thumb" class="absolute top-0 h-full w-[3px] bg-white left-0 -ml-px pointer-events-none"></div>
+                <!-- Album Art -->
+                <div class="relative flex justify-center items-center flex-shrink-0">
+                    <div class="w-48 md:w-64 aspect-square brutal-border shadow-brutal-lg bg-white relative group overflow-hidden">
+                        <img id="player-artwork"
+                             class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
+                             src="https://lh3.googleusercontent.com/aida/AEtjO1V4AB5OzUkvLplMWNp6Q6wzxPYaG5iaOWz60ztUXJ1o0NYMX07U4eTaA9_tZrtZYVncq0kL0p8dxMyp0bknLUDhCu9-ITb9xBjbw2eZMbeYlszwsQEhB1SQc02lD0pU7mzO_BxHhS3nC6zOiMtZD2CuuBRDoa_3sx6tZAC6_uFz2jLR5GJjrQTF66Ur0aLNH9vqt-8WHbzppPhTgwGCb606bUt3dBqblxFQuSZ8QjpehoT_RjE9ZJ8-1-jd"
+                             alt="Album Artwork">
+                        <div class="absolute top-2 left-2 bg-primary-container brutal-border px-2 py-1 font-headline font-bold text-[10px] md:text-xs uppercase shadow-brutal text-primary">
+                            NOW PLAYING
+                        </div>
                     </div>
                 </div>
 
-                <!-- Transport Controls -->
-                <div class="flex items-center justify-between mt-2 gap-4 flex-wrap">
-                    <button id="player-shuffle" class="transport-btn w-12 h-12" title="Shuffle" aria-label="Toggle shuffle">
-                        <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">shuffle</span>
-                    </button>
-                    <div class="flex gap-3">
-                        <button id="player-skip-prev" class="transport-btn w-14 h-14" title="Previous" aria-label="Skip previous">
-                            <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">skip_previous</span>
+                <!-- Track Info & Controls -->
+                <div class="flex flex-col gap-4 w-full" style="color:#ffffff;">
+
+                    <!-- Badges -->
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span id="player-mood-badge" class="font-headline font-bold uppercase px-3 py-1 brutal-border-3 text-xs tracking-widest shadow-brutal inline-block" style="background-color:#ffcc00;color:#1a1a1a;">MS: —</span>
+                        <span id="player-genre" class="font-headline uppercase font-bold text-sm tracking-widest opacity-80">—</span>
+                    </div>
+
+                    <!-- Title / Artist -->
+                    <div>
+                        <h1 id="player-track-title" class="font-headline text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-none" style="color:#ffffff;">LOADING…</h1>
+                        <h2 id="player-artist" class="font-headline text-lg md:text-xl font-bold uppercase tracking-tight mt-1" style="color:rgba(255,255,255,0.75);">—</h2>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full mt-1">
+                        <div class="flex justify-between font-headline text-sm font-bold mb-1 px-1" style="color:rgba(255,255,255,0.85);">
+                            <span id="player-elapsed">0:00</span>
+                            <span id="player-total">0:00</span>
+                        </div>
+                        <div id="player-scrubber" class="w-full brutal-border-3 bg-white relative h-6 md:h-8" style="border-color:rgba(255,255,255,0.6);" title="Click to seek">
+                            <div id="player-progress-fill" class="absolute top-0 left-0 h-full bg-primary-container w-0 border-r-[3px] border-primary transition-none"></div>
+                            <div id="player-scrubber-thumb" class="absolute top-0 h-full w-[3px] bg-white left-0 -ml-px pointer-events-none"></div>
+                        </div>
+                    </div>
+
+                    <!-- Transport Controls -->
+                    <div class="flex items-center justify-between mt-1 gap-2 flex-wrap">
+                        <button id="player-shuffle" class="transport-btn w-10 h-10" title="Shuffle" aria-label="Toggle shuffle">
+                            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1;">shuffle</span>
                         </button>
-                        <button id="player-play-pause" class="transport-btn w-20 h-20 bg-primary-container" title="Play / Pause" aria-label="Play or pause" style="background-color:#ffcc00;color:#1a1a1a;">
-                            <span id="player-play-icon" class="material-symbols-outlined text-5xl" style="font-variation-settings:'FILL' 1;">play_arrow</span>
-                        </button>
-                        <button id="player-skip-next" class="transport-btn w-14 h-14" title="Next" aria-label="Skip next">
-                            <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">skip_next</span>
+                        <div class="flex gap-2">
+                            <button id="player-skip-prev" class="transport-btn w-12 h-12" title="Previous" aria-label="Skip previous">
+                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">skip_previous</span>
+                            </button>
+                            <button id="player-play-pause" class="transport-btn w-14 h-14 md:w-16 md:h-16 bg-primary-container" title="Play / Pause" aria-label="Play or pause" style="background-color:#ffcc00;color:#1a1a1a;">
+                                <span id="player-play-icon" class="material-symbols-outlined text-3xl md:text-4xl" style="font-variation-settings:'FILL' 1;">play_arrow</span>
+                            </button>
+                            <button id="player-skip-next" class="transport-btn w-12 h-12" title="Next" aria-label="Skip next">
+                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">skip_next</span>
+                            </button>
+                        </div>
+                        <button id="player-repeat" class="transport-btn w-10 h-10" title="Repeat" aria-label="Toggle repeat">
+                            <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1;">repeat</span>
                         </button>
                     </div>
-                    <button id="player-repeat" class="transport-btn w-12 h-12" title="Repeat" aria-label="Toggle repeat">
-                        <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">repeat</span>
-                    </button>
-                </div>
 
-                <!-- Volume -->
-                <div class="flex items-center gap-3 mt-2">
-                    <span class="material-symbols-outlined" style="color:rgba(255,255,255,0.8);">volume_mute</span>
-                    <div id="player-volume-bar" class="flex-grow brutal-border-3 bg-white relative h-5" style="border-color:rgba(255,255,255,0.6);" title="Click to set volume">
-                        <div id="player-volume-fill" class="absolute top-0 left-0 h-full bg-primary w-3/4"></div>
+                    <!-- Volume -->
+                    <div class="flex items-center gap-3 mt-1">
+                        <span class="material-symbols-outlined text-lg" style="color:rgba(255,255,255,0.8);">volume_mute</span>
+                        <div id="player-volume-bar" class="flex-grow brutal-border-3 bg-white relative h-3 md:h-4" style="border-color:rgba(255,255,255,0.6);" title="Click to set volume">
+                            <div id="player-volume-fill" class="absolute top-0 left-0 h-full bg-primary w-3/4"></div>
+                        </div>
+                        <span class="material-symbols-outlined text-lg" style="color:rgba(255,255,255,0.8);">volume_up</span>
                     </div>
-                    <span class="material-symbols-outlined" style="color:rgba(255,255,255,0.8);">volume_up</span>
+
                 </div>
+            </section>
+        </div>
 
-            </div>
-        </section>
-    </div>
+    </main>
 
-    <!-- Queue Section -->
-    <section class="border-t-4 border-primary pt-10">
-        <h3 class="font-headline text-3xl font-black uppercase tracking-tighter mb-6 flex items-center gap-4">
-            <span class="bg-primary text-white px-2 py-1">QUEUE</span> — Playlist Songs
-        </h3>
-        <div id="queue-list" class="grid grid-cols-1 gap-4">
+    <!-- RIGHT: Queue Panel -->
+    <aside class="queue-panel bg-surface-container-low">
+        <div class="sticky top-0 z-10 bg-surface-container-low px-5 pt-6 pb-4 border-b-4 border-primary">
+            <h3 class="font-headline text-2xl font-black uppercase tracking-tighter flex items-center gap-3">
+                <span class="bg-primary text-white px-2 py-1 text-sm">QUEUE</span> Playlist Songs
+            </h3>
+        </div>
+        <div id="queue-list" class="flex flex-col gap-3 px-5 py-4">
             <!-- Populated by player.js -->
         </div>
-    </section>
+    </aside>
 
-</main>
+</div>
 
 <!-- ── Footer ────────────────────────────────────────────────────────── -->
 <footer class="bg-primary text-surface-container-lowest font-label text-xs uppercase tracking-widest w-full border-t-4 border-primary mt-12">
