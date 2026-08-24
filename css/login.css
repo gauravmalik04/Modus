@@ -1,0 +1,830 @@
+/* ==========================================================================
+   MODUS - AUTHENTICATION STYLESHEET (LOGIN, SIGNUP, RECOVER)
+   Bauhaus Neo-Brutalist Design System Translation
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS & CSS VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Core Colors */
+  --color-primary: #1a1a1a;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffcc00;
+  --color-on-primary-container: #1a1a1a;
+
+  --color-secondary: #e63b2e;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ffcc00;
+
+  --color-tertiary: #0055ff;
+  --color-on-tertiary: #ffffff;
+
+  --color-accent-yellow: #ffcc00;
+  --color-accent-red: #e63b2e;
+  --color-accent-blue: #0055ff;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-success: #008844;
+  --color-success-container: #d1f2d9;
+  --color-on-success-container: #005522;
+
+  --color-background: #fdf8f8;
+  --color-background-paper: #f5f0e8;
+  --color-on-background: #1a1a1a;
+
+  --color-surface: #fdf8f8;
+  --color-surface-container: #f1edec;
+  --color-surface-container-high: #ebe7e6;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface: #1a1a1a;
+  --color-on-surface-variant: #444748;
+
+  --color-outline: #1a1a1a;
+  --color-outline-variant: #c4c7c7;
+
+  /* Typography */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Space Grotesk", sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Brutalist Borders & Shadows */
+  --border-thick: 3px solid #1a1a1a;
+  --border-med: 2px solid #1a1a1a;
+  --shadow-yellow: 6px 6px 0px 0px #ffcc00;
+  --shadow-red: 6px 6px 0px 0px #e63b2e;
+  --shadow-black: 6px 6px 0px 0px #1a1a1a;
+  --shadow-button: 4px 4px 0px 0px #1a1a1a;
+  --shadow-button-hover: 6px 6px 0px 0px #1a1a1a;
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE & RESET
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background-paper);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   3. TOP APP BAR / HEADER
+   -------------------------------------------------------------------------- */
+.auth-header {
+  background-color: var(--color-background-paper);
+  border-bottom: var(--border-thick);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+}
+
+.auth-header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-logo-box {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: var(--border-med);
+  background-color: var(--color-surface-container-lowest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-shadow: 2px 2px 0px 0px #1a1a1a;
+}
+
+.brand-logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-title {
+  font-family: var(--font-headline);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.help-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: var(--border-thick);
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-primary);
+  box-shadow: 3px 3px 0px 0px #1a1a1a;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.help-btn:hover {
+  background-color: var(--color-accent-yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px 0px #1a1a1a;
+}
+
+.help-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #1a1a1a;
+}
+
+/* --------------------------------------------------------------------------
+   4. MAIN CANVAS & GEOMETRIC ACCENTS
+   -------------------------------------------------------------------------- */
+.auth-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Geometric Bauhaus Decor */
+.bg-decor-circle {
+  position: absolute;
+  top: 3rem;
+  left: 3rem;
+  width: 9rem;
+  height: 9rem;
+  border: 6px solid var(--color-primary);
+  border-radius: 50%;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-decor-bar {
+  position: absolute;
+  bottom: 4rem;
+  right: 3rem;
+  width: 14rem;
+  height: 3rem;
+  background-color: var(--color-accent-red);
+  opacity: 0.15;
+  transform: rotate(45deg);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-decor-square {
+  position: absolute;
+  top: 40%;
+  right: 5%;
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--color-accent-yellow);
+  opacity: 0.2;
+  transform: rotate(15deg);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. AUTH VIEWS CONTAINER & CARDS
+   -------------------------------------------------------------------------- */
+.auth-container {
+  width: 100%;
+  max-width: 30rem;
+  position: relative;
+  z-index: 10;
+  margin: 1.5rem auto;
+}
+
+.auth-container.wide {
+  max-width: 32rem;
+}
+
+/* Hide inactive view states */
+.auth-view {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.auth-view.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Neo-Brutalist Cards */
+.auth-card {
+  background-color: var(--color-surface);
+  border: var(--border-thick);
+  padding: 2.5rem 2rem;
+  position: relative;
+}
+
+.auth-card.shadow-yellow {
+  box-shadow: var(--shadow-yellow);
+}
+
+.auth-card.shadow-red {
+  box-shadow: var(--shadow-red);
+}
+
+/* Corner Accent Block on Recover Card */
+.card-corner-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: var(--color-accent-red);
+  border-left: var(--border-thick);
+  border-bottom: var(--border-thick);
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .card-corner-accent {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. CARD HEADER & TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+.card-header {
+  margin-bottom: 2rem;
+  border-bottom: var(--border-thick);
+  padding-bottom: 1rem;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+@media (min-width: 768px) {
+  .card-title {
+    font-size: 3.75rem;
+  }
+}
+
+.card-subtitle {
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+  margin-top: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. FORM ELEMENTS & NEO-INPUTS
+   -------------------------------------------------------------------------- */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form-label {
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.neo-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: var(--border-thick);
+  padding: 0.625rem 0.25rem;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  color: var(--color-primary);
+  border-radius: 0;
+  transition: border-bottom-color 0.2s ease;
+}
+
+.neo-input.has-icon {
+  padding-right: 2.75rem;
+}
+
+.neo-input::placeholder {
+  color: var(--color-outline-variant);
+  font-weight: 400;
+}
+
+.neo-input:focus {
+  outline: none;
+  border-bottom-color: var(--color-accent-red);
+}
+
+.neo-input.is-invalid {
+  border-bottom-color: var(--color-error);
+}
+
+/* Field Inline Error */
+.field-error-msg {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-error);
+  margin-top: 0.35rem;
+  display: none;
+}
+
+.field-error-msg.visible {
+  display: block;
+}
+
+/* Password Toggle Icon Button */
+.password-toggle-btn {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.password-toggle-btn:hover {
+  opacity: 1;
+  color: var(--color-accent-red);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+}
+
+.input-icon {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-primary);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. PASSWORD STRENGTH METER
+   -------------------------------------------------------------------------- */
+.strength-meter-container {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 0.5rem;
+  height: 0.875rem;
+  width: 100%;
+}
+
+.strength-bar {
+  flex: 1;
+  background-color: transparent;
+  border: var(--border-med);
+  transition: background-color 0.2s ease;
+}
+
+/* Strength Bar Levels */
+.strength-bar.lvl-red {
+  background-color: var(--color-accent-red);
+}
+
+.strength-bar.lvl-yellow {
+  background-color: var(--color-accent-yellow);
+}
+
+.strength-bar.lvl-black {
+  background-color: var(--color-primary);
+}
+
+.strength-bar.lvl-blue {
+  background-color: var(--color-accent-blue);
+}
+
+.strength-label-text {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   9. CHECKBOXES & UTILITY ROWS
+   -------------------------------------------------------------------------- */
+.form-utilities-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.form-utilities-row.justify-end {
+  justify-content: flex-end;
+}
+
+.brutal-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brutal-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: var(--border-thick);
+  background-color: var(--color-surface-container-lowest);
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.brutal-checkbox:checked {
+  background-color: var(--color-primary);
+}
+
+.brutal-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 6px;
+  width: 5px;
+  height: 11px;
+  border: solid var(--color-on-primary);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.brutal-checkbox:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+}
+
+.checkbox-text {
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  transition: color 0.15s ease;
+}
+
+.brutal-checkbox-label:hover .checkbox-text {
+  color: var(--color-accent-red);
+}
+
+/* Inline Link */
+.inline-link {
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.inline-link:hover {
+  color: var(--color-accent-blue);
+  border-bottom-color: var(--color-accent-blue);
+}
+
+.inline-link.alert-hover:hover {
+  color: var(--color-accent-red);
+  border-bottom-color: var(--color-accent-red);
+}
+
+/* --------------------------------------------------------------------------
+   10. BUTTONS & LOADING STATES
+   -------------------------------------------------------------------------- */
+.btn-submit {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: var(--border-thick);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  position: relative;
+}
+
+/* Yellow Button (Login & Signup) */
+.btn-yellow {
+  background-color: var(--color-accent-yellow);
+  color: var(--color-primary);
+}
+
+.btn-yellow:hover {
+  background-color: var(--color-primary);
+  color: var(--color-accent-yellow);
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.btn-yellow:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #1a1a1a;
+}
+
+/* Black Button (Recover Password) */
+.btn-black {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-black:hover {
+  background-color: var(--color-accent-red);
+  color: var(--color-on-primary);
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.btn-black:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #1a1a1a;
+}
+
+/* Loading State */
+.btn-submit.is-loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.btn-spinner {
+  display: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: brutalist-spin 0.6s linear infinite;
+}
+
+.btn-submit.is-loading .btn-spinner {
+  display: inline-block;
+}
+
+@keyframes brutalist-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. NOTIFICATION & STATUS BANNERS
+   -------------------------------------------------------------------------- */
+.auth-alert {
+  display: none;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: var(--border-thick);
+  margin-bottom: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  animation: banner-pop 0.2s ease-out;
+}
+
+@keyframes banner-pop {
+  from {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.auth-alert.visible {
+  display: flex;
+}
+
+.auth-alert.error {
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+  border-color: var(--color-error);
+}
+
+.auth-alert.success {
+  background-color: var(--color-success-container);
+  color: var(--color-on-success-container);
+  border-color: var(--color-success);
+}
+
+.alert-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.alert-text {
+  flex-grow: 1;
+}
+
+/* --------------------------------------------------------------------------
+   12. CONTEXTUAL FOOTER & NAVIGATION LINKS
+   -------------------------------------------------------------------------- */
+.card-footer {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: var(--border-thick);
+  text-align: center;
+}
+
+.card-footer.dashed-top {
+  border-top-style: dashed;
+  border-top-width: 2px;
+}
+
+.footer-nav-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-on-surface-variant);
+}
+
+.footer-action-link {
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--color-primary);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.footer-action-link:hover {
+  color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
+}
+
+.footer-action-link:hover .material-symbols-outlined {
+  transform: translateX(3px);
+}
+
+.footer-action-link.back-link:hover .material-symbols-outlined {
+  transform: translateX(-3px);
+}
+
+/* --------------------------------------------------------------------------
+   13. ACCESSIBILITY & FOCUS
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   14. RESPONSIVE ADJUSTMENTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .card-title {
+    font-size: 2.5rem;
+  }
+
+  .btn-submit {
+    font-size: 1.25rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .form-utilities-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

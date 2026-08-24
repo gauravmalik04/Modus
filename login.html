@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Modus - Authentication</title>
+    <!-- Google Fonts & Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <!-- Modus Authentication Stylesheet -->
+    <link rel="stylesheet" href="css/login.css">
+    <!-- Auth Guard: already logged in → skip to playlists -->
+    <script>
+      try {
+        if (JSON.parse(sessionStorage.getItem('modus_session'))) {
+          window.location.replace('playlists.html');
+        }
+      } catch (e) {}
+    </script>
+</head>
+
+<body>
+    <!-- TopAppBar -->
+    <header class="auth-header" role="banner">
+        <div class="auth-header-container">
+            <a class="brand-wrapper" href="landing.html" aria-label="Modus Home">
+                <div class="brand-logo-box">
+                    <img alt="Modus Logo" src="static/logo.png">
+                </div>
+                <span class="brand-title">Modus</span>
+            </a>
+
+        </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="auth-main" role="main">
+        <!-- Decorative Bauhaus Geometric Background Accents -->
+        <div class="bg-decor-circle" aria-hidden="true"></div>
+        <div class="bg-decor-bar" aria-hidden="true"></div>
+        <div class="bg-decor-square" aria-hidden="true"></div>
+
+        <div class="auth-container" id="auth-container">
+
+            <!-- ===============================================================
+                 1. LOGIN VIEW
+                 =============================================================== -->
+            <section class="auth-view active" id="login-view" aria-labelledby="login-title">
+                <div class="auth-card shadow-yellow">
+                    <div class="card-header">
+                        <h1 class="card-title" id="login-title">LOGIN</h1>
+                        <p class="card-subtitle">Enter your credentials.</p>
+                    </div>
+
+                    <!-- Status Alert Banner -->
+                    <div class="auth-alert" id="login-alert" role="alert" aria-live="polite">
+                        <span class="material-symbols-outlined alert-icon">error</span>
+                        <span class="alert-text" id="login-alert-text"></span>
+                    </div>
+
+                    <form class="auth-form" id="login-form" autocomplete="off" novalidate>
+                        <!-- Email / Username Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="login-identifier">Email or Username</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input" id="login-identifier" name="identifier"
+                                    placeholder="user@bauhaus.io" type="text" autocomplete="off" required>
+                            </div>
+                            <span class="field-error-msg" id="login-identifier-error"></span>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="login-password">Password</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input has-icon" id="login-password" name="password"
+                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                <button class="password-toggle-btn" type="button" id="login-password-toggle"
+                                    aria-label="Toggle password visibility" data-target="login-password">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
+                                </button>
+                            </div>
+                            <span class="field-error-msg" id="login-password-error"></span>
+                        </div>
+
+                        <!-- Utilities Row: Forgot Password -->
+                        <div class="form-utilities-row justify-end">
+                            <a class="inline-link" href="#forgot" id="to-forgot-btn">Forgot Password</a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button class="btn-submit btn-yellow" id="login-submit-btn" type="submit">
+                            <span class="btn-spinner" aria-hidden="true"></span>
+                            <span class="btn-label">ACCESS</span>
+                        </button>
+                    </form>
+
+                    <!-- Contextual Footer -->
+                    <div class="card-footer">
+                        <p class="footer-nav-text">
+                            New here?
+                            <a class="footer-action-link" href="#signup" id="to-signup-btn">
+                                JOIN
+                                <span class="material-symbols-outlined" style="font-size: 1.125rem;">arrow_forward</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ===============================================================
+                 2. SIGNUP VIEW
+                 =============================================================== -->
+            <section class="auth-view" id="signup-view" aria-labelledby="signup-title">
+                <div class="auth-card shadow-yellow">
+                    <div class="card-header">
+                        <h1 class="card-title" id="signup-title">SIGNUP</h1>
+                        <p class="card-subtitle">Create your Modus account.</p>
+                    </div>
+
+                    <!-- Status Alert Banner -->
+                    <div class="auth-alert" id="signup-alert" role="alert" aria-live="polite">
+                        <span class="material-symbols-outlined alert-icon">error</span>
+                        <span class="alert-text" id="signup-alert-text"></span>
+                    </div>
+
+                    <form class="auth-form" id="signup-form" autocomplete="off" novalidate>
+                        <!-- Username / Name Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="signup-username">Username</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input" id="signup-username" name="username"
+                                    placeholder="JANE_DOE" type="text" autocomplete="off" required>
+                            </div>
+                            <span class="field-error-msg" id="signup-username-error"></span>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="signup-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input" id="signup-email" name="email"
+                                    placeholder="HELLO@BAUHAUS.LABS" type="email" autocomplete="off" required>
+                            </div>
+                            <span class="field-error-msg" id="signup-email-error"></span>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="signup-password">Password</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input has-icon" id="signup-password" name="password"
+                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                <button class="password-toggle-btn" type="button" id="signup-password-toggle"
+                                    aria-label="Toggle password visibility" data-target="signup-password">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
+                                </button>
+                            </div>
+                            <!-- 4-step Password Strength Indicator -->
+                            <div class="strength-meter-container" aria-live="polite">
+                                <div class="strength-bars">
+                                    <div class="strength-bar" id="str-bar-1"></div>
+                                    <div class="strength-bar" id="str-bar-2"></div>
+                                    <div class="strength-bar" id="str-bar-3"></div>
+                                    <div class="strength-bar" id="str-bar-4"></div>
+                                </div>
+                                <span class="strength-label-text" id="strength-label">STRENGTH: REQUIRED (8+ CHARS)</span>
+                            </div>
+                            <span class="field-error-msg" id="signup-password-error"></span>
+                        </div>
+
+                        <!-- Confirm Password Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="signup-confirm-password">Confirm Password</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input has-icon" id="signup-confirm-password" name="confirmPassword"
+                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                <button class="password-toggle-btn" type="button" id="signup-confirm-toggle"
+                                    aria-label="Toggle confirm password visibility" data-target="signup-confirm-password">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
+                                </button>
+                            </div>
+                            <span class="field-error-msg" id="signup-confirm-password-error"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button class="btn-submit btn-yellow" id="signup-submit-btn" type="submit">
+                            <span class="btn-spinner" aria-hidden="true"></span>
+                            <span class="btn-label">CREATE ACCOUNT</span>
+                        </button>
+                    </form>
+
+                    <!-- Contextual Footer -->
+                    <div class="card-footer">
+                        <p class="footer-nav-text">
+                            Already a member?
+                            <a class="footer-action-link" href="#login" id="to-login-from-signup">
+                                LOGIN
+                                <span class="material-symbols-outlined" style="font-size: 1.125rem;">arrow_forward</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ===============================================================
+                 3. FORGOT PASSWORD / RECOVER VIEW
+                 =============================================================== -->
+            <section class="auth-view" id="forgot-view" aria-labelledby="forgot-title">
+                <div class="auth-card shadow-red">
+                    <!-- Graphic Red Corner Accent -->
+                    <div class="card-corner-accent" aria-hidden="true"></div>
+
+                    <div class="card-header">
+                        <h1 class="card-title" id="forgot-title">RECOVER</h1>
+                        <p class="card-subtitle">Lost access? Send recovery link.</p>
+                    </div>
+
+                    <!-- Status Alert Banner -->
+                    <div class="auth-alert" id="forgot-alert" role="alert" aria-live="polite">
+                        <span class="material-symbols-outlined alert-icon">error</span>
+                        <span class="alert-text" id="forgot-alert-text"></span>
+                    </div>
+
+                    <form class="auth-form" id="forgot-form" autocomplete="off" novalidate>
+                        <!-- Email Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="forgot-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <input class="neo-input has-icon" id="forgot-email" name="email"
+                                    placeholder="YOUR@EMAIL.COM" type="email" autocomplete="off" required>
+                                <span class="material-symbols-outlined input-icon" aria-hidden="true" style="font-variation-settings: 'FILL' 0;">mail</span>
+                            </div>
+                            <span class="field-error-msg" id="forgot-email-error"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button class="btn-submit btn-black" id="forgot-submit-btn" type="submit">
+                            <span class="btn-spinner" aria-hidden="true"></span>
+                            <span class="btn-label">SEND LINK</span>
+                        </button>
+                    </form>
+
+                    <!-- Contextual Footer -->
+                    <div class="card-footer dashed-top">
+                        <a class="footer-action-link back-link" href="#login" id="to-login-from-forgot">
+                            <span class="material-symbols-outlined" style="font-size: 1.125rem;">arrow_back</span>
+                            BACK TO LOGIN
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Core Modular Scripts -->
+    <script src="js/validation.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/pages/login.js"></script>
+</body>
+
+</html>
