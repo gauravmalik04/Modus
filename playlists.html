@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Modus - Smart Sorter</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Material Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/playlists.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <div class="logo">
+            Modus
+        </div>
+
+        <div class="header-right">
+
+            <div class="search-box">
+                <span class="material-symbols-outlined">
+                    search
+                </span>
+
+                <input
+                    type="text"
+                    placeholder="Search library..."
+                >
+            </div>
+
+            <button class="icon-button">
+                <span class="material-symbols-outlined">
+                    notifications
+                </span>
+            </button>
+
+            <button class="icon-button">
+                <span class="material-symbols-outlined">
+                    settings
+                </span>
+            </button>
+
+            <img
+                class="avatar"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdMMav6mztymr7Yy_AQS0TdbsT2Il2DyqoKKemnJqXkneJCMOJsB7L6d1kVfoBuEPgbfyFypgD6CERMErNDTG5c2PPl6eIm8etAL4_i8bwzWkziLEjhQi_qYUkwTmnIw_UFgvi_eGc9IKuiL6K0bYxCRj87WBlcFT00otd1-WxkLW7dnJorBv1vbC3sDP8S55aNQtt9LjWL1xc6CMdZfX5q_uTBE5nyohk1kDnDXwIE9WVbK1zfps-Uw"
+                alt="User avatar"
+            >
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-container">
+
+        <div class="workspace">
+
+
+            <!-- ================= LEFT ================= -->
+
+            <section class="panel source-panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        Source: Deep Focus Mix
+                    </h2>
+
+                    <p>
+                        10 TRACKS • 32M
+                    </p>
+
+                </div>
+
+
+                <!-- JS will add songs here -->
+
+                <div
+                    id="song-list"
+                    class="song-list"
+                >
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= MIDDLE ================= -->
+
+            <section class="middle-panel">
+
+                <div class="engine-heading">
+
+                    <h1>
+                        SEQUENCE<br>
+                        ENGINE
+                    </h1>
+
+                    <p>
+                        Select an algorithm to restructure
+                        your playlist.
+                    </p>
+
+                </div>
+
+
+                <!-- Algorithm buttons -->
+
+                <div class="algorithm-grid">
+
+
+                    <div class="algorithm-card active">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+
+                        <span>
+                            Romantic
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            bolt
+                        </span>
+
+                        <span>
+                            Energetic
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            rocket_launch
+                        </span>
+
+                        <span>
+                            Thrill
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            ac_unit
+                        </span>
+
+                        <span>
+                            Chill
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            sentiment_very_satisfied
+                        </span>
+
+                        <span>
+                            Feel Good
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            cloud
+                        </span>
+
+                        <span>
+                            Melancholic
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            trending_up
+                        </span>
+
+                        <span>
+                            Energy Build-up
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card">
+                        <span class="material-symbols-outlined">
+                            equalizer
+                        </span>
+
+                        <span>
+                            Beat Match
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- Generate button -->
+
+                <button
+                    id="generate-btn"
+                    class="generate-button"
+                >
+
+                    <span class="material-symbols-outlined">
+                        auto_fix_high
+                    </span>
+
+                    Generate Sequence
+
+                </button>
+
+            </section>
+
+
+
+            <!-- ================= RIGHT ================= -->
+
+            <section class="panel preview-panel">
+
+                <div class="panel-header preview-header">
+
+                    <div>
+
+                        <h2>
+                            Preview: Mood Flow
+                        </h2>
+
+                        <p>
+                            ALGORITHM APPLIED
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JS will replace this content -->
+
+                <div
+                    id="preview-panel"
+                    class="preview-content"
+                >
+
+                    <div id="mood-grid" class="mood-grid"></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- Your JavaScript -->
+    <script src="js/pages/playlists.js"></script>
+
+</body>
+</html>
