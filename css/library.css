@@ -350,6 +350,39 @@ button {
     background-position: center;
 }
 
+/* Play button overlaid bottom-right of cover art */
+.card-play-btn {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    background-color: var(--color-primary-fixed);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid var(--color-primary);
+    box-shadow: 4px 4px 0px 0px var(--color-primary);
+    transition: transform 100ms ease, box-shadow 100ms ease, background-color 100ms ease;
+    z-index: 2;
+}
+
+.card-play-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-fixed);
+}
+
+.card-play-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.card-play-btn .material-symbols-outlined {
+    font-size: 1.5rem;
+}
+
 .card-score {
     position: absolute;
     top: 1.5rem;

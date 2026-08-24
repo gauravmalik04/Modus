@@ -4,6 +4,7 @@
  */
 
 import { Playlist } from '../Playlist.js';
+import { launchPlayer } from '../utils/playerLauncher.js';
 
 // ── Global Mood Palette ──────────────────────────────────────────────────────
 export const MOOD_COLORS = {
@@ -56,8 +57,6 @@ const logoutBtn     = document.getElementById('logout-btn');
 
 // ── State ────────────────────────────────────────────────────────────────────
 let currentPlaylist = null;
-let activeTrackIndex = null;
-let isPlaying = false;
 
 // ── Format Duration ──────────────────────────────────────────────────────────
 function formatDuration(ms) {
@@ -204,72 +203,45 @@ function renderTracks(songs) {
 
         const songMoodStyle = MOOD_COLORS[bestPreset] || MOOD_COLORS.feel_good;
         const score = Math.round(bestScore * 100);
-        const isActive = activeTrackIndex === index && isPlaying;
 
-        row.className = isActive
-            ? 'grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center p-4 brutal-border bg-primary-container text-primary group cursor-pointer relative overflow-hidden brutal-shadow transition-all'
-            : 'grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center p-4 brutal-border bg-surface-container-lowest hover:bg-primary hover:text-surface-container-lowest transition-colors group cursor-pointer relative overflow-hidden';
+        row.className = 'grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center p-4 brutal-border bg-surface-container-lowest hover:bg-primary hover:text-surface-container-lowest transition-colors group cursor-pointer relative overflow-hidden';
 
         row.innerHTML = `
             <div class="w-8 font-headline font-bold text-xl flex items-center justify-center">
-                ${isActive
-                    ? '<span class="material-symbols-outlined animate-pulse text-2xl" style="font-variation-settings: \'FILL\' 1;">equalizer</span>'
-                    : trackNumber}
+                ${trackNumber}
             </div>
             <div class="flex flex-col min-w-0 pr-2">
                 <span class="font-headline font-bold text-lg leading-tight truncate group-hover:text-primary-container">${song.name || 'Untitled Track'}</span>
                 <span class="font-body text-sm opacity-80 truncate">${song.artist || 'Unknown Artist'}</span>
             </div>
             <div class="hidden sm:flex items-center gap-2 pr-8 justify-end">
-                <div class="w-16 h-2 ${isActive ? 'bg-primary brutal-border border-primary' : 'bg-outline-variant brutal-border'}">
+                <div class="w-16 h-2 bg-outline-variant brutal-border">
                     <div class="h-full" style="width: ${Math.min(100, Math.max(0, score))}%; background-color: ${songMoodStyle.bg};"></div>
                 </div>
                 <span class="font-label font-bold">${score}</span>
             </div>
             <div class="font-body font-bold text-right group-hover:text-primary-container">${durationText}</div>
             <div class="absolute right-0 top-0 bottom-0 w-24 bg-primary-container flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform brutal-border border-l-4">
-                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">
-                    ${isActive ? 'pause' : 'play_arrow'}
-                </span>
+                <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
             </div>
         `;
 
+        // Clicking a track row launches player starting at that track
         row.addEventListener('click', () => {
-            if (activeTrackIndex === index && isPlaying) {
-                isPlaying = false;
-            } else {
-                activeTrackIndex = index;
-                isPlaying = true;
+            if (currentPlaylist) {
+                launchPlayer(currentPlaylist, currentPlaylist.songs, index);
             }
-            updatePlayBtnState();
-            renderTracks(songs);
         });
 
         trackListEl.appendChild(row);
     });
 }
 
-// ── Play Playlist Button Handler ─────────────────────────────────────────────
-function updatePlayBtnState() {
-    if (!playBtn) return;
-    if (isPlaying) {
-        if (playBtnText) playBtnText.textContent = 'Pause Playlist';
-    } else {
-        if (playBtnText) playBtnText.textContent = 'Play Playlist';
-    }
-}
-
+// ── Play Playlist Button Handler — navigates to player at track 0 ─────────────
 if (playBtn) {
     playBtn.addEventListener('click', () => {
         if (!currentPlaylist || !currentPlaylist.songs.length) return;
-        if (isPlaying) {
-            isPlaying = false;
-        } else {
-            if (activeTrackIndex === null) activeTrackIndex = 0;
-            isPlaying = true;
-        }
-        updatePlayBtnState();
-        renderTracks(currentPlaylist.songs);
+        launchPlayer(currentPlaylist, currentPlaylist.songs, 0);
     });
 }
 

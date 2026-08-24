@@ -5,6 +5,7 @@
  */
 
 import { Playlist } from '../Playlist.js';
+import { launchPlayer } from '../utils/playerLauncher.js';
 
 // ── Auth Guard ──────────────────────────────────────────────────────────────
 (function guardSession() {
@@ -83,6 +84,9 @@ function renderCard(playlist) {
                  style="background-image: url('${playlist.coverImage}');"
                  role="img" aria-label="Cover art for ${playlist.name}">
             </div>
+            <button id="library-play-btn" class="card-play-btn brutalist-border" aria-label="Play playlist" title="Play playlist">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+            </button>
         </div>
         <div class="card-content">
             <h3 class="card-title">${playlist.name}</h3>
@@ -104,6 +108,15 @@ function renderCard(playlist) {
             <p class="card-description">${playlist.description}</p>
         </div>
     `;
+
+    // Wire play button — stops propagation so card click still goes to playlist_view
+    const playBtn = article.querySelector('#library-play-btn');
+    if (playBtn) {
+        playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            launchPlayer(playlist, playlist.songs, 0);
+        });
+    }
 
     const navigate = () => {
         try {
