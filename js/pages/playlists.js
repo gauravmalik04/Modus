@@ -454,12 +454,27 @@ function showSongPreviewInline(song, itemEl) {
 
 
 // ======================================================
+// LOGOUT BUTTON
+// ======================================================
+
+const logoutBtn = document.getElementById("logout-btn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        // Delete the session ID from session storage
+        sessionStorage.removeItem("modus_session");
+        // Redirect to login page
+        window.location.replace("login.html");
+    });
+}
+
+// ======================================================
 // GENERATE BUTTON
 // ======================================================
 
 if (generateBtn) {
     generateBtn.addEventListener("click", generateSequence);
 }
+
 
 
 // ======================================================

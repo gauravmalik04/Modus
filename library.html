@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>MODUS - Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/library.css">
+    <!-- Auth Guard: no session → back to login -->
+    <script>
+      try {
+        if (!JSON.parse(sessionStorage.getItem('modus_session'))) {
+          window.location.replace('login.html');
+        }
+      } catch(e) { window.location.replace('login.html'); }
+    </script>
+</head>
+<body class="library-body">
+    <!-- TopNavBar -->
+    <header class="library-header">
+        <div class="header-container">
+            <div class="header-logo-group">
+                <a class="header-logo-link" href="#">
+                    <img src="https://lh3.googleusercontent.com/aida/AEtjO1UGaU1OtXx7r2NV6avCKhj6KQ0tEXjTqqkuLxk9f3DyovH5xoD5uLTcG0TT5JBLmRIlI9SyVyonfFPoyCDIH-ZK4c2xOZczSE-2e4BOYkuGMswtL-goG_mzFhWTOA4gNIRXcFYO6T_p0kEC-tVH_eJvtlU0ZaphG_HlBbKCRJEOriK0BCRqo-0eGy4NiVqDUEW_642VGzbekPkEfGUElVFeG4_aiOLFT7kMoD7qeH4MYKUHCvf-lBeXjZgs" alt="MODUS Logo" class="header-logo-img brutalist-border">
+                    <span class="header-logo-text">MODUS</span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button id="logout-btn" class="profile-btn brutalist-button" title="Logout">
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="library-main">
+        <!-- Header Section -->
+        <section class="library-section-header">
+            <div>
+                <h1 class="library-title">Your<br><span>Library</span></h1>
+            </div>
+            <!-- Filters -->
+            <div class="filters-group">
+                <button class="filter-btn-active brutalist-button">
+                    <span class="material-symbols-outlined">schedule</span> Recent
+                </button>
+                <button class="filter-btn brutalist-button">
+                    <span class="material-symbols-outlined">favorite</span> Favorites
+                </button>
+                <button class="filter-btn brutalist-button">
+                    <span class="material-symbols-outlined">tune</span> Mood Score
+                </button>
+            </div>
+        </section>
+
+        <!-- Grid -->
+        <section class="library-grid" id="library-grid">
+            <!-- Cards are injected dynamically by library.js -->
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="library-footer">
+        <div class="footer-logo">
+            <img src="https://lh3.googleusercontent.com/aida/AEtjO1UGaU1OtXx7r2NV6avCKhj6KQ0tEXjTqqkuLxk9f3DyovH5xoD5uLTcG0TT5JBLmRIlI9SyVyonfFPoyCDIH-ZK4c2xOZczSE-2e4BOYkuGMswtL-goG_mzFhWTOA4gNIRXcFYO6T_p0kEC-tVH_eJvtlU0ZaphG_HlBbKCRJEOriK0BCRqo-0eGy4NiVqDUEW_642VGzbekPkEfGUElVFeG4_aiOLFT7kMoD7qeH4MYKUHCvf-lBeXjZgs" alt="MODUS Logo">
+        </div>
+        <div class="footer-copyright">
+            © 2024 MODUS SYSTEMS. ALL RIGHTS RESERVED.
+        </div>
+        <nav class="footer-nav">
+            <a class="footer-link" href="#">Documentation</a>
+            <a class="footer-link" href="#">API</a>
+            <a class="footer-link" href="#">Status</a>
+            <a class="footer-link" href="#">Privacy</a>
+        </nav>
+    </footer>
+    <script type="module" src="js/pages/library.js"></script>
+</body>
+</html>

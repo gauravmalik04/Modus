@@ -6,6 +6,12 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 :root {
@@ -54,25 +60,39 @@ body {
 
 
 .logo {
-
     font-family: "Space Grotesk", sans-serif;
-
     font-size: 22px;
-
     font-weight: 700;
-
     letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.back-to-library {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--black);
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity 100ms ease;
+}
+
+.back-to-library:hover {
+    opacity: 1;
+}
+
+.back-to-library .material-symbols-outlined {
+    font-size: 22px;
 }
 
 
 .header-right {
-
     display: flex;
-
     align-items: center;
-
+    justify-content: flex-end;
     gap: 20px;
-
     width: 70%;
 }
 
