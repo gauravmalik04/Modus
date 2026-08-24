@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Modus - Playlists</title>
+    <!-- Auth Guard: must be logged in to view this page -->
+    <script>
+      try {
+        if (!JSON.parse(sessionStorage.getItem('modus_session'))) {
+          window.location.replace('login.html');
+        }
+      } catch (e) {
+        window.location.replace('login.html');
+      }
+    </script>
+</head>
+<body>
+    <p>Playlists page — coming soon.</p>
+</body>
+</html>

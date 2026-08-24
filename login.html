@@ -14,6 +14,14 @@
         rel="stylesheet">
     <!-- Modus Authentication Stylesheet -->
     <link rel="stylesheet" href="css/login.css">
+    <!-- Auth Guard: already logged in → skip to playlists -->
+    <script>
+      try {
+        if (JSON.parse(sessionStorage.getItem('modus_session'))) {
+          window.location.replace('playlists.html');
+        }
+      } catch (e) {}
+    </script>
 </head>
 
 <body>
@@ -26,11 +34,7 @@
                 </div>
                 <span class="brand-title">Modus</span>
             </a>
-            <div class="header-actions">
-                <button class="help-btn" type="button" aria-label="Need Help?" title="Need Help?">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_outline</span>
-                </button>
-            </div>
+
         </div>
     </header>
 
@@ -185,15 +189,6 @@
                             <span class="field-error-msg" id="signup-confirm-password-error"></span>
                         </div>
 
-                        <!-- Terms & Conditions Checkbox -->
-                        <div class="form-group">
-                            <label class="brutal-checkbox-label" for="signup-terms">
-                                <input class="brutal-checkbox" id="signup-terms" name="terms" type="checkbox" required>
-                                <span class="checkbox-text">Agree to Terms &amp; Conditions</span>
-                            </label>
-                            <span class="field-error-msg" id="signup-terms-error"></span>
-                        </div>
-
                         <!-- Submit Button -->
                         <button class="btn-submit btn-yellow" id="signup-submit-btn" type="submit">
                             <span class="btn-spinner" aria-hidden="true"></span>
@@ -243,8 +238,6 @@
                                     placeholder="YOUR@EMAIL.COM" type="email" autocomplete="off" required>
                                 <span class="material-symbols-outlined input-icon" aria-hidden="true" style="font-variation-settings: 'FILL' 0;">mail</span>
                             </div>
-                            <span class="field-error-msg" id="forgot-email-error"></span>
-                        </div>
                             <span class="field-error-msg" id="forgot-email-error"></span>
                         </div>
 

@@ -1,514 +1,239 @@
 /**
- * Modus - Authentication Page Controller
- * Handles view routing (Login, Signup, Recover), real-time validation,
- * password visibility toggles, strength indicator, and form submissions.
+ * Modus Auth - Page Controller
+ * Handles view switching, form submission, password toggles, and strength meter.
+ * Depends on: Validator, AuthStorage, Auth (loaded before this script).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  'use strict';
 
-  // Dependencies
-  const Validator = window.ValidationService;
-  const Storage = window.StorageService;
-  const Auth = window.AuthService;
+  // ── DOM References ─────────────────────────────────────────────────────────
 
-  // View Containers
-  const views = {
-    login: document.getElementById('login-view'),
-    signup: document.getElementById('signup-view'),
-    forgot: document.getElementById('forgot-view')
-  };
+  const loginView  = document.getElementById('login-view');
+  const signupView = document.getElementById('signup-view');
+  const forgotView = document.getElementById('forgot-view');
 
-  const authContainer = document.getElementById('auth-container');
-
-  // Forms
-  const loginForm = document.getElementById('login-form');
+  const loginForm  = document.getElementById('login-form');
   const signupForm = document.getElementById('signup-form');
   const forgotForm = document.getElementById('forgot-form');
 
-  // Alert Banners
-  const alerts = {
-    login: {
-      banner: document.getElementById('login-alert'),
-      text: document.getElementById('login-alert-text')
-    },
-    signup: {
-      banner: document.getElementById('signup-alert'),
-      text: document.getElementById('signup-alert-text')
-    },
-    forgot: {
-      banner: document.getElementById('forgot-alert'),
-      text: document.getElementById('forgot-alert-text')
-    }
-  };
-
-  // Strength Meter Elements
-  const signupPasswordInput = document.getElementById('signup-password');
-  const strengthBars = [
-    document.getElementById('str-bar-1'),
-    document.getElementById('str-bar-2'),
-    document.getElementById('str-bar-3'),
-    document.getElementById('str-bar-4')
-  ];
+  // Strength meter (signup)
+  const strengthBars  = [1, 2, 3, 4].map(i => document.getElementById('str-bar-' + i));
   const strengthLabel = document.getElementById('strength-label');
 
-  // -------------------------------------------------------------------------
-  // 1. VIEW ROUTING & NAVIGATION
-  // -------------------------------------------------------------------------
+  // ── View Routing ───────────────────────────────────────────────────────────
 
-  /**
-   * Switches the active view (login, signup, forgot)
-   * @param {'login'|'signup'|'forgot'} viewName
-   * @param {boolean} updateHistory
-   */
-  function showView(viewName, updateHistory = true) {
-    if (!views[viewName]) {
-      viewName = 'login';
-    }
+  const VIEWS = { login: loginView, signup: signupView, forgot: forgotView };
 
-    // Hide all views & clear existing banners
-    Object.keys(views).forEach((key) => {
-      const view = views[key];
-      if (view) {
-        view.classList.remove('active');
-        clearAlert(key);
-      }
-    });
-
-    // Show target view
-    const targetView = views[viewName];
-    if (targetView) {
-      targetView.classList.add('active');
-    }
-
-    // Adjust container width for wider forms (e.g. signup)
-    if (viewName === 'signup') {
-      authContainer.classList.add('wide');
-    } else {
-      authContainer.classList.remove('wide');
-    }
-
-    // Update browser URL hash
-    if (updateHistory) {
-      window.location.hash = viewName;
-    }
-
-    // Autofocus first input in the new view
-    setTimeout(() => {
-      const firstInput = targetView.querySelector('input:not([type="checkbox"]):not([type="hidden"])');
-      if (firstInput) {
-        firstInput.focus();
-      }
-    }, 100);
+  function showView(name) {
+    Object.values(VIEWS).forEach(v => { if (v) v.classList.remove('active'); });
+    if (VIEWS[name]) VIEWS[name].classList.add('active');
+    clearAllAlerts();
+    clearAllFieldErrors();
+    window.location.hash = name;
   }
 
-  // Handle Hash Changes
-  function handleHashRoute() {
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    if (hash === 'signup') {
-      showView('signup', false);
-    } else if (hash === 'forgot' || hash === 'recover') {
-      showView('forgot', false);
-    } else {
-      showView('login', false);
-    }
+  function routeHash() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'signup') showView('signup');
+    else if (hash === 'forgot') showView('forgot');
+    else showView('login');
   }
 
-  window.addEventListener('hashchange', handleHashRoute);
+  window.addEventListener('hashchange', routeHash);
+  routeHash();
 
-  // Link event bindings for smooth switching and data sharing
-  const toSignupBtn = document.getElementById('to-signup-btn');
-  if (toSignupBtn) {
-    toSignupBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showView('signup');
-    });
-  }
+  // ── Alert Banners ──────────────────────────────────────────────────────────
 
-  const toLoginFromSignup = document.getElementById('to-login-from-signup');
-  if (toLoginFromSignup) {
-    toLoginFromSignup.addEventListener('click', (e) => {
-      e.preventDefault();
-      showView('login');
-    });
-  }
-
-  const toForgotBtn = document.getElementById('to-forgot-btn');
-  if (toForgotBtn) {
-    toForgotBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const loginIdentifier = document.getElementById('login-identifier')?.value.trim() || '';
-      const forgotEmailInput = document.getElementById('forgot-email');
-      if (forgotEmailInput && loginIdentifier.includes('@')) {
-        forgotEmailInput.value = loginIdentifier;
-      }
-      showView('forgot');
-    });
-  }
-
-  const toLoginFromForgot = document.getElementById('to-login-from-forgot');
-  if (toLoginFromForgot) {
-    toLoginFromForgot.addEventListener('click', (e) => {
-      e.preventDefault();
-      showView('login');
-    });
-  }
-
-  // -------------------------------------------------------------------------
-  // 2. ALERT & ERROR RENDERING
-  // -------------------------------------------------------------------------
-
-  /**
-   * Displays an alert banner on a specific view
-   * @param {'login'|'signup'|'forgot'} view
-   * @param {string} message
-   * @param {'error'|'success'} type
-   */
   function showAlert(view, message, type = 'error') {
-    const alertObj = alerts[view];
-    if (!alertObj || !alertObj.banner) return;
-
-    alertObj.banner.className = `auth-alert ${type} visible`;
-    if (alertObj.text) {
-      alertObj.text.textContent = message;
-    }
-    const icon = alertObj.banner.querySelector('.alert-icon');
-    if (icon) {
-      icon.textContent = type === 'error' ? 'error' : 'check_circle';
-    }
+    const el   = document.getElementById(view + '-alert');
+    const text = document.getElementById(view + '-alert-text');
+    const icon = el?.querySelector('.alert-icon');
+    if (!el || !text) return;
+    text.textContent = message;
+    el.className = 'auth-alert visible ' + type;
+    if (icon) icon.textContent = type === 'success' ? 'check_circle' : 'error';
   }
 
-  /**
-   * Clears the alert banner on a specific view
-   * @param {'login'|'signup'|'forgot'} view
-   */
   function clearAlert(view) {
-    const alertObj = alerts[view];
-    if (!alertObj || !alertObj.banner) return;
-    alertObj.banner.className = 'auth-alert';
-    if (alertObj.text) {
-      alertObj.text.textContent = '';
-    }
+    const el = document.getElementById(view + '-alert');
+    if (el) el.className = 'auth-alert';
   }
 
-  /**
-   * Shows an inline field error
-   * @param {string} fieldId
-   * @param {string} message
-   */
-  function setFieldError(fieldId, message) {
+  function clearAllAlerts() {
+    ['login', 'signup', 'forgot'].forEach(clearAlert);
+  }
+
+  // ── Field Errors ───────────────────────────────────────────────────────────
+
+  function showFieldError(fieldId, message) {
     const input = document.getElementById(fieldId);
-    const errorEl = document.getElementById(`${fieldId}-error`);
-    if (input) {
-      input.classList.add('is-invalid');
-      input.setAttribute('aria-invalid', 'true');
-    }
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.classList.add('visible');
-    }
+    const errEl = document.getElementById(fieldId + '-error');
+    if (input) input.classList.add('is-invalid');
+    if (errEl) { errEl.textContent = message; errEl.classList.add('visible'); }
   }
 
-  /**
-   * Clears an inline field error
-   * @param {string} fieldId
-   */
   function clearFieldError(fieldId) {
     const input = document.getElementById(fieldId);
-    const errorEl = document.getElementById(`${fieldId}-error`);
-    if (input) {
-      input.classList.remove('is-invalid');
-      input.removeAttribute('aria-invalid');
-    }
-    if (errorEl) {
-      errorEl.textContent = '';
-      errorEl.classList.remove('visible');
-    }
+    const errEl = document.getElementById(fieldId + '-error');
+    if (input) input.classList.remove('is-invalid');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('visible'); }
   }
 
-  /**
-   * Clears all field errors within a container
-   * @param {HTMLElement} container
-   */
-  function clearAllFieldErrors(container) {
-    if (!container) return;
-    const inputs = container.querySelectorAll('.neo-input, .brutal-checkbox');
-    inputs.forEach((input) => {
-      input.classList.remove('is-invalid');
-      input.removeAttribute('aria-invalid');
-    });
-    const errorMsgs = container.querySelectorAll('.field-error-msg');
-    errorMsgs.forEach((msg) => {
-      msg.textContent = '';
-      msg.classList.remove('visible');
-    });
+  function clearAllFieldErrors() {
+    document.querySelectorAll('.neo-input').forEach(i => i.classList.remove('is-invalid'));
+    document.querySelectorAll('.field-error-msg').forEach(e => { e.textContent = ''; e.classList.remove('visible'); });
   }
 
-  // -------------------------------------------------------------------------
-  // 3. PASSWORD VISIBILITY TOGGLES
-  // -------------------------------------------------------------------------
+  function applyFieldErrors(prefix, errors) {
+    Object.entries(errors).forEach(([field, msg]) => showFieldError(prefix + field, msg));
+  }
 
-  const passwordToggles = document.querySelectorAll('.password-toggle-btn');
-  passwordToggles.forEach((btn) => {
+  // ── Password Visibility Toggles ────────────────────────────────────────────
+
+  document.querySelectorAll('.password-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-target');
-      const targetInput = document.getElementById(targetId);
-      const iconSpan = btn.querySelector('.material-symbols-outlined');
-
-      if (!targetInput) return;
-
-      const isPassword = targetInput.type === 'password';
-      targetInput.type = isPassword ? 'text' : 'password';
-
-      if (iconSpan) {
-        iconSpan.textContent = isPassword ? 'visibility_off' : 'visibility';
-      }
-
-      btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      const targetId = btn.dataset.target;
+      const input    = document.getElementById(targetId);
+      const icon     = btn.querySelector('.material-symbols-outlined');
+      if (!input) return;
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      if (icon) icon.textContent = isHidden ? 'visibility_off' : 'visibility';
     });
   });
 
-  // -------------------------------------------------------------------------
-  // 4. PASSWORD STRENGTH METER
-  // -------------------------------------------------------------------------
+  // ── Password Strength Meter (signup only) ──────────────────────────────────
 
-  if (signupPasswordInput && Validator) {
-    signupPasswordInput.addEventListener('input', (e) => {
-      const password = e.target.value;
-      const evaluation = Validator.validatePassword(password);
-      const score = evaluation.score;
+  const signupPasswordInput = document.getElementById('signup-password');
+  const STRENGTH_LEVELS = [
+    { label: 'TOO WEAK',  cls: 'lvl-red'    },
+    { label: 'WEAK',      cls: 'lvl-red'    },
+    { label: 'FAIR',      cls: 'lvl-yellow' },
+    { label: 'STRONG',    cls: 'lvl-black'  },
+    { label: 'VERY STRONG', cls: 'lvl-blue' }
+  ];
 
-      // Reset bars
-      strengthBars.forEach((bar) => {
-        if (bar) bar.className = 'strength-bar';
-      });
+  function updateStrengthMeter(score) {
+    strengthBars.forEach((bar, i) => {
+      if (!bar) return;
+      bar.className = 'strength-bar';
+      if (i < score) bar.classList.add(STRENGTH_LEVELS[score].cls);
+    });
+    if (strengthLabel) {
+      const level = STRENGTH_LEVELS[score];
+      strengthLabel.textContent = score === 0 ? 'STRENGTH: REQUIRED (8+ CHARS)' : 'STRENGTH: ' + level.label;
+    }
+  }
 
-      // Apply stepped colors matching Bauhaus palette
-      const levelClasses = ['lvl-red', 'lvl-yellow', 'lvl-black', 'lvl-blue'];
-      for (let i = 0; i < score; i++) {
-        if (strengthBars[i]) {
-          strengthBars[i].classList.add(levelClasses[i]);
-        }
-      }
-
-      // Update strength text label
-      if (strengthLabel) {
-        if (password.length === 0) {
-          strengthLabel.textContent = 'STRENGTH: REQUIRED (8+ CHARS)';
-          strengthLabel.style.color = 'var(--color-on-surface-variant)';
-        } else {
-          strengthLabel.textContent = `STRENGTH: ${evaluation.label.toUpperCase()}`;
-          if (score === 1) strengthLabel.style.color = 'var(--color-accent-red)';
-          else if (score === 2) strengthLabel.style.color = '#c29000';
-          else if (score === 3) strengthLabel.style.color = 'var(--color-primary)';
-          else if (score === 4) strengthLabel.style.color = 'var(--color-accent-blue)';
-        }
-      }
+  if (signupPasswordInput) {
+    signupPasswordInput.addEventListener('input', () => {
+      const score = Validator.passwordStrength(signupPasswordInput.value);
+      updateStrengthMeter(score);
+      clearFieldError('signup-password');
     });
   }
 
-  // -------------------------------------------------------------------------
-  // 5. LIVE REAL-TIME INPUT VALIDATION BINDINGS
-  // -------------------------------------------------------------------------
+  // ── Loading Button Helpers ─────────────────────────────────────────────────
 
-  // Auto-clear errors on field input
-  const allInputs = document.querySelectorAll('.neo-input, .brutal-checkbox');
-  allInputs.forEach((input) => {
-    input.addEventListener('input', () => {
-      clearFieldError(input.id);
-    });
-    input.addEventListener('change', () => {
-      clearFieldError(input.id);
-    });
-  });
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (loading) btn.classList.add('is-loading');
+    else btn.classList.remove('is-loading');
+  }
 
-  // -------------------------------------------------------------------------
-  // 6. INITIAL ROUTING
-  // -------------------------------------------------------------------------
+  // ── LOGIN FORM ─────────────────────────────────────────────────────────────
 
-  handleHashRoute();
-
-  // -------------------------------------------------------------------------
-  // 7. FORM SUBMISSIONS
-  // -------------------------------------------------------------------------
-
-  // --- LOGIN SUBMISSION ---
   if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', e => {
       e.preventDefault();
       clearAlert('login');
-      clearAllFieldErrors(loginForm);
+      clearAllFieldErrors();
 
-      const identifier = document.getElementById('login-identifier')?.value || '';
-      const password = document.getElementById('login-password')?.value || '';
+      const identifier = document.getElementById('login-identifier').value.trim();
+      const password   = document.getElementById('login-password').value;
 
-      // Validate
-      if (Validator) {
-        const validation = Validator.validateLoginForm({ identifier, password });
-        if (!validation.isValid) {
-          if (validation.errors.identifier) setFieldError('login-identifier', validation.errors.identifier);
-          if (validation.errors.password) setFieldError('login-password', validation.errors.password);
-          showAlert('login', 'Please fill in all required credentials.');
-          return;
+      setLoading('login-submit-btn', true);
+
+      // Small timeout gives the loading spinner a frame to render
+      setTimeout(() => {
+        try {
+          const { user } = Auth.login({ identifier, password });
+          showAlert('login', `Welcome back, ${user.username}! Redirecting...`, 'success');
+          setTimeout(() => { window.location.href = 'playlists.html'; }, 600);
+        } catch (err) {
+          if (err.fields) applyFieldErrors('login-', err.fields);
+          showAlert('login', err.message);
+          setLoading('login-submit-btn', false);
         }
-      }
-
-      // Submit state
-      const submitBtn = document.getElementById('login-submit-btn');
-      submitBtn.classList.add('is-loading');
-
-      try {
-        let res;
-        if (Auth) {
-          res = await Auth.login({ identifier, password });
-        }
-        const username = res?.user?.username || identifier;
-        showAlert('login', `Welcome back, ${username}! Redirecting to playlists...`, 'success');
-        
-        // Redirect to playlists.html after short visual feedback
-        setTimeout(() => {
-          window.location.href = 'playlists.html';
-        }, 500);
-      } catch (err) {
-        if (err.errors) {
-          Object.keys(err.errors).forEach((key) => {
-            const inputId = `login-${key}`;
-            setFieldError(inputId, err.errors[key]);
-          });
-        }
-        showAlert('login', err.message || 'Login failed. Please check your credentials.');
-        submitBtn.classList.remove('is-loading');
-      }
+      }, 300);
     });
   }
 
-  // --- SIGNUP SUBMISSION ---
+  // ── SIGNUP FORM ────────────────────────────────────────────────────────────
+
   if (signupForm) {
-    signupForm.addEventListener('submit', async (e) => {
+    signupForm.addEventListener('submit', e => {
       e.preventDefault();
       clearAlert('signup');
-      clearAllFieldErrors(signupForm);
+      clearAllFieldErrors();
 
-      const username = document.getElementById('signup-username')?.value || '';
-      const email = document.getElementById('signup-email')?.value || '';
-      const password = document.getElementById('signup-password')?.value || '';
-      const confirmPassword = document.getElementById('signup-confirm-password')?.value || '';
-      const terms = document.getElementById('signup-terms')?.checked || false;
+      const username        = document.getElementById('signup-username').value.trim();
+      const email           = document.getElementById('signup-email').value.trim();
+      const password        = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
 
-      // Validate
-      if (Validator) {
-        const validation = Validator.validateSignupForm({
-          username,
-          email,
-          password,
-          confirmPassword,
-          terms
-        });
+      setLoading('signup-submit-btn', true);
 
-        if (!validation.isValid) {
-          if (validation.errors.username) setFieldError('signup-username', validation.errors.username);
-          if (validation.errors.email) setFieldError('signup-email', validation.errors.email);
-          if (validation.errors.password) setFieldError('signup-password', validation.errors.password);
-          if (validation.errors.confirmPassword) setFieldError('signup-confirm-password', validation.errors.confirmPassword);
-          if (validation.errors.terms) setFieldError('signup-terms', validation.errors.terms);
+      setTimeout(() => {
+        try {
+          const { user } = Auth.signup({ username, email, password, confirmPassword });
 
-          const firstErrorMsg = Object.values(validation.errors)[0];
-          showAlert('signup', firstErrorMsg);
-          return;
+          // Reset form & meter
+          signupForm.reset();
+          updateStrengthMeter(0);
+
+          // Switch to login and prefill identifier
+          showView('login');
+          const idInput = document.getElementById('login-identifier');
+          if (idInput) idInput.value = email;
+          document.getElementById('login-password')?.focus();
+          showAlert('login', 'Account created! Enter your password to log in.', 'success');
+        } catch (err) {
+          if (err.fields) applyFieldErrors('signup-', err.fields);
+          showAlert('signup', err.message);
+        } finally {
+          setLoading('signup-submit-btn', false);
         }
-      }
-
-      // Submit state
-      const submitBtn = document.getElementById('signup-submit-btn');
-      submitBtn.classList.add('is-loading');
-
-      try {
-        let res;
-        if (Auth) {
-          res = await Auth.signup({ username, email, password, confirmPassword, terms });
-        }
-        
-        // Reset signup form
-        signupForm.reset();
-        if (strengthBars) {
-          strengthBars.forEach((bar) => { if (bar) bar.className = 'strength-bar'; });
-        }
-        if (strengthLabel) {
-          strengthLabel.textContent = 'STRENGTH: REQUIRED (8+ CHARS)';
-          strengthLabel.style.color = 'var(--color-on-surface-variant)';
-        }
-
-        // Open Login view immediately
-        showView('login');
-
-        // Prefill login identifier with newly created username/email
-        const loginIdentifierInput = document.getElementById('login-identifier');
-        if (loginIdentifierInput) {
-          loginIdentifierInput.value = email || username;
-        }
-
-        // Focus password input for instant login
-        const loginPasswordInput = document.getElementById('login-password');
-        if (loginPasswordInput) {
-          loginPasswordInput.focus();
-        }
-
-        // Display success banner on login card
-        showAlert('login', res?.message || 'Account created successfully! Please enter your password to login.', 'success');
-      } catch (err) {
-        if (err.errors) {
-          Object.keys(err.errors).forEach((key) => {
-            const inputId = `signup-${key}`;
-            setFieldError(inputId, err.errors[key]);
-          });
-        }
-        showAlert('signup', err.message || 'Signup failed.');
-      } finally {
-        submitBtn.classList.remove('is-loading');
-      }
+      }, 300);
     });
   }
 
-  // --- FORGOT PASSWORD SUBMISSION ---
+  // ── FORGOT PASSWORD FORM ───────────────────────────────────────────────────
+
   if (forgotForm) {
-    forgotForm.addEventListener('submit', async (e) => {
+    forgotForm.addEventListener('submit', e => {
       e.preventDefault();
       clearAlert('forgot');
-      clearAllFieldErrors(forgotForm);
+      clearAllFieldErrors();
 
-      const email = document.getElementById('forgot-email')?.value || '';
+      const email = document.getElementById('forgot-email').value.trim();
 
-      // Validate
-      if (Validator) {
-        const validation = Validator.validateForgotPasswordForm({ email });
-        if (!validation.isValid) {
-          if (validation.errors.email) setFieldError('forgot-email', validation.errors.email);
-          showAlert('forgot', validation.errors.email);
-          return;
+      setLoading('forgot-submit-btn', true);
+
+      setTimeout(() => {
+        try {
+          const { message } = Auth.recoverPassword({ email });
+          showAlert('forgot', message, 'success');
+          forgotForm.reset();
+        } catch (err) {
+          if (err.fields) applyFieldErrors('forgot-', err.fields);
+          showAlert('forgot', err.message);
+        } finally {
+          setLoading('forgot-submit-btn', false);
         }
-      }
-
-      // Submit state
-      const submitBtn = document.getElementById('forgot-submit-btn');
-      submitBtn.classList.add('is-loading');
-
-      try {
-        let res;
-        if (Auth) {
-          res = await Auth.recoverPassword({ email });
-        }
-        showAlert('forgot', res?.message || `Recovery link dispatched to ${email}.`, 'success');
-      } catch (err) {
-        if (err.errors) {
-          Object.keys(err.errors).forEach((key) => {
-            const inputId = `forgot-${key}`;
-            setFieldError(inputId, err.errors[key]);
-          });
-        }
-        showAlert('forgot', err.message || 'Password recovery validation failed.');
-      } finally {
-        submitBtn.classList.remove('is-loading');
-      }
+      }, 300);
     });
   }
+
 });

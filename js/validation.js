@@ -1,250 +1,85 @@
 /**
- * Modus - Client-side Form Validation Utilities
- * Modular validation rules and helpers for authentication forms.
+ * Modus Auth - Validation
+ * Simple, clean client-side validation for login, signup, and forgot password forms.
  */
 
-(function (root, factory) {
-  if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
-  } else {
-    root.ValidationService = factory();
-  }
-})(typeof self !== 'undefined' ? self : this, function () {
-  'use strict';
+const Validator = (() => {
 
-  // RFC 5322 standard email regex pattern
-  const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+  // Email regex (RFC 5322 simplified)
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Username: 3-30 chars, alphanumeric, underscores, hyphens
-  const USERNAME_REGEX = /^[a-zA-Z0-9_-]{3,30}$/;
+  // Username: 3–20 chars, letters/numbers/underscores only
+  const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
 
-  /**
-   * Validates if a string is non-empty after trimming
-   * @param {string} value
-   * @returns {boolean}
-   */
-  function isNotEmpty(value) {
-    return typeof value === 'string' && value.trim().length > 0;
-  }
-
-  /**
-   * Validates email format
-   * @param {string} email
-   * @returns {boolean}
-   */
   function validateEmail(email) {
-    if (!isNotEmpty(email)) return false;
-    return EMAIL_REGEX.test(email.trim());
+    if (!email) return 'Email is required.';
+    if (!EMAIL_RE.test(email.trim())) return 'Enter a valid email address.';
+    return null;
   }
 
-  /**
-   * Validates username or display name
-   * @param {string} username
-   * @returns {{ isValid: boolean, message: string }}
-   */
   function validateUsername(username) {
-    if (!isNotEmpty(username)) {
-      return { isValid: false, message: 'Username is required.' };
-    }
-    const trimmed = username.trim();
-    if (trimmed.length < 3) {
-      return { isValid: false, message: 'Username must be at least 3 characters.' };
-    }
-    if (trimmed.length > 30) {
-      return { isValid: false, message: 'Username cannot exceed 30 characters.' };
-    }
-    if (!USERNAME_REGEX.test(trimmed)) {
-      return { isValid: false, message: 'Username can only contain letters, numbers, underscores, and hyphens.' };
-    }
-    return { isValid: true, message: '' };
+    if (!username) return 'Username is required.';
+    if (username.length < 3) return 'Username must be at least 3 characters.';
+    if (username.length > 20) return 'Username must be 20 characters or less.';
+    if (!USERNAME_RE.test(username)) return 'Only letters, numbers and underscores allowed.';
+    return null;
   }
 
-  /**
-   * Evaluates password strength and satisfies project password requirements:
-   * Minimum 8 characters, at least 1 letter and 1 number/special character.
-   * @param {string} password
-   * @returns {{
-   *   isValid: boolean,
-   *   score: number, // 0 to 4
-   *   label: string, // 'Weak', 'Fair', 'Good', 'Strong'
-   *   message: string,
-   *   checks: { length: boolean, hasNumber: boolean, hasSpecial: boolean, hasUpper: boolean, hasLower: boolean }
-   * }}
-   */
   function validatePassword(password) {
-    if (!password || typeof password !== 'string') {
-      return {
-        isValid: false,
-        score: 0,
-        label: 'Empty',
-        message: 'Password is required.',
-        checks: { length: false, hasNumber: false, hasSpecial: false, hasUpper: false, hasLower: false }
-      };
-    }
+    if (!password) return 'Password is required.';
+    if (password.length < 8) return 'Password must be at least 8 characters.';
+    if (!/[A-Z]/.test(password)) return 'Password must contain at least one uppercase letter.';
+    if (!/[0-9]/.test(password)) return 'Password must contain at least one number.';
+    return null;
+  }
 
-    const checks = {
-      length: password.length >= 8,
-      hasNumber: /\d/.test(password),
-      hasSpecial: /[^A-Za-z0-9]/.test(password),
-      hasUpper: /[A-Z]/.test(password),
-      hasLower: /[a-z]/.test(password)
-    };
-
+  /**
+   * Returns a score 0–4 for password strength
+   */
+  function passwordStrength(password) {
     let score = 0;
-    if (password.length > 0) score = 1;
-    if (checks.length) score++;
-    if ((checks.hasNumber || checks.hasSpecial) && (checks.hasUpper || checks.hasLower)) score++;
-    if (checks.length && checks.hasNumber && checks.hasSpecial && checks.hasUpper && checks.hasLower) score++;
-
-    // Clamp score 0-4
-    score = Math.min(4, Math.max(0, score));
-
-    const labels = ['Empty', 'Weak', 'Fair', 'Good', 'Strong'];
-    const label = labels[score];
-
-    // Satisfies project requirement: at least 8 chars
-    let isValid = checks.length;
-    let message = '';
-
-    if (!checks.length) {
-      message = 'Password must be at least 8 characters long.';
-    }
-
-    return {
-      isValid,
-      score,
-      label,
-      message,
-      checks
-    };
+    if (!password) return score;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+    return score;
   }
 
-  /**
-   * Validates if confirm password matches password
-   * @param {string} password
-   * @param {string} confirmPassword
-   * @returns {{ isValid: boolean, message: string }}
-   */
-  function validatePasswordMatch(password, confirmPassword) {
-    if (!isNotEmpty(confirmPassword)) {
-      return { isValid: false, message: 'Please confirm your password.' };
-    }
-    if (password !== confirmPassword) {
-      return { isValid: false, message: 'Passwords do not match.' };
-    }
-    return { isValid: true, message: '' };
-  }
-
-  /**
-   * Validates the complete Login form payload
-   * @param {{ identifier?: string, password?: string }} fields
-   * @returns {{ isValid: boolean, errors: Record<string, string> }}
-   */
-  function validateLoginForm(fields = {}) {
+  function validateLogin({ identifier, password }) {
     const errors = {};
-    const identifier = (fields.identifier || '').trim();
-    const password = fields.password || '';
-
-    if (!identifier) {
-      errors.identifier = 'Email or username is required.';
-    }
-
-    if (!password) {
-      errors.password = 'Password is required.';
-    }
-
-    return {
-      isValid: Object.keys(errors).length === 0,
-      errors
-    };
+    if (!identifier || !identifier.trim()) errors.identifier = 'Email or username is required.';
+    if (!password) errors.password = 'Password is required.';
+    return errors;
   }
 
-  /**
-   * Validates the complete Signup form payload
-   * @param {{
-   *   username?: string,
-   *   email?: string,
-   *   password?: string,
-   *   confirmPassword?: string,
-   *   terms?: boolean
-   * }} fields
-   * @returns {{ isValid: boolean, errors: Record<string, string> }}
-   */
-  function validateSignupForm(fields = {}) {
+  function validateSignup({ username, email, password, confirmPassword }) {
     const errors = {};
-    const username = (fields.username || '').trim();
-    const email = (fields.email || '').trim();
-    const password = fields.password || '';
-    const confirmPassword = fields.confirmPassword || '';
-    const terms = Boolean(fields.terms);
+    const usernameErr = validateUsername((username || '').trim());
+    if (usernameErr) errors.username = usernameErr;
 
-    // 1. Username
-    const usernameResult = validateUsername(username);
-    if (!usernameResult.isValid) {
-      errors.username = usernameResult.message;
+    const emailErr = validateEmail((email || '').trim());
+    if (emailErr) errors.email = emailErr;
+
+    const passwordErr = validatePassword(password || '');
+    if (passwordErr) errors.password = passwordErr;
+
+    if (!confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password.';
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match.';
     }
 
-    // 2. Email
-    if (!email) {
-      errors.email = 'Email is required.';
-    } else if (!validateEmail(email)) {
-      errors.email = 'Please enter a valid email address.';
-    }
-
-    // 3. Password
-    const passwordResult = validatePassword(password);
-    if (!password) {
-      errors.password = 'Password is required.';
-    } else if (!passwordResult.isValid) {
-      errors.password = passwordResult.message;
-    }
-
-    // 4. Confirm Password
-    const matchResult = validatePasswordMatch(password, confirmPassword);
-    if (!matchResult.isValid) {
-      errors.confirmPassword = matchResult.message;
-    }
-
-    // 5. Terms
-    if (!terms) {
-      errors.terms = 'You must agree to the terms to proceed.';
-    }
-
-    return {
-      isValid: Object.keys(errors).length === 0,
-      errors
-    };
+    return errors;
   }
 
-  /**
-   * Validates the Forgot Password form payload
-   * @param {{ email?: string }} fields
-   * @returns {{ isValid: boolean, errors: Record<string, string> }}
-   */
-  function validateForgotPasswordForm(fields = {}) {
+  function validateForgotPassword({ email }) {
     const errors = {};
-    const email = (fields.email || '').trim();
-
-    if (!email) {
-      errors.email = 'Email is required.';
-    } else if (!validateEmail(email)) {
-      errors.email = 'Please enter a valid email address.';
-    }
-
-    return {
-      isValid: Object.keys(errors).length === 0,
-      errors
-    };
+    const emailErr = validateEmail((email || '').trim());
+    if (emailErr) errors.email = emailErr;
+    return errors;
   }
 
-  return {
-    isNotEmpty,
-    validateEmail,
-    validateUsername,
-    validatePassword,
-    validatePasswordMatch,
-    validateLoginForm,
-    validateSignupForm,
-    validateForgotPasswordForm
-  };
-});
+  return { validateEmail, validateUsername, validatePassword, passwordStrength, validateLogin, validateSignup, validateForgotPassword };
+
+})();
