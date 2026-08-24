@@ -90,7 +90,7 @@ function renderCard(playlist) {
         </div>
     `;
 
-    const navigate = () => { window.location.href = 'playlists.html'; };
+    const navigate = () => { window.location.href = 'playlist_view.html'; };
     article.addEventListener('click', navigate);
     article.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(); }

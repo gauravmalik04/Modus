@@ -1,0 +1,1241 @@
+/* =========================================
+   MODUS — PLAYLISTS PAGE
+   Dark Studio Theme × Mood-Reactive Accents
+========================================= */
+
+
+/* =========================================
+   1. DESIGN TOKENS
+========================================= */
+
+:root {
+    /* Surface stack */
+    --bg:        #0d0d0d;
+    --surface:   #141414;
+    --surface-2: #1c1c1c;
+    --surface-3: #242424;
+    --surface-4: #2c2c2c;
+
+    /* Text */
+    --text-primary: #f0ece3;
+    --text-muted:   rgba(240, 236, 227, 0.45);
+    --text-dim:     rgba(240, 236, 227, 0.25);
+
+    /* Borders */
+    --border:     #262626;
+    --border-mid: #333333;
+
+    /* Preset accent palette */
+    --accent-romantic:    #ff6b9d;
+    --accent-energetic:   #ff5c00;
+    --accent-thrill:      #a855f7;
+    --accent-chill:       #00cfff;
+    --accent-feel_good:   #ffe600;
+    --accent-melancholic: #7b8cff;
+
+    /* Active accent — default: romantic */
+    --accent-active: var(--accent-romantic);
+
+    /* Transitions */
+    --transition-fast: 0.12s ease;
+    --transition-mid:  0.25s ease;
+    --transition-slow: 0.4s ease;
+}
+
+/* ── Mood-reactive: body[data-preset] switches --accent-active ── */
+body[data-preset="romantic"]    { --accent-active: var(--accent-romantic);    }
+body[data-preset="energetic"]   { --accent-active: var(--accent-energetic);   }
+body[data-preset="thrill"]      { --accent-active: var(--accent-thrill);      }
+body[data-preset="chill"]       { --accent-active: var(--accent-chill);       }
+body[data-preset="feel_good"]   { --accent-active: var(--accent-feel_good);   }
+body[data-preset="melancholic"] { --accent-active: var(--accent-melancholic); }
+
+
+/* =========================================
+   2. RESET & BASE
+========================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar { display: none; }
+
+body {
+    font-family: "Inter", sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* =========================================
+   3. TOPBAR
+========================================= */
+
+.topbar {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    font-family: "Space Grotesk", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    font-weight: 900;
+    width: 100%;
+    top: 0;
+    border-bottom: 4px solid var(--border-mid);
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+    position: sticky;
+    z-index: 50;
+}
+
+.topbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.logo-box {
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--surface-4);
+    border: 4px solid var(--text-primary);
+    box-shadow: 4px 4px 0px 0px var(--accent-active);
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 100ms ease, box-shadow 100ms ease;
+    flex-shrink: 0;
+}
+
+.brand-link:active .logo-box {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.back-to-library {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--text-primary);
+    background: var(--surface-2);
+    border: 3px solid var(--border-mid);
+    box-shadow: 3px 3px 0px 0px var(--border);
+    text-decoration: none;
+    transition: all 100ms ease;
+}
+
+.back-to-library:hover {
+    border-color: var(--accent-active);
+    color: var(--accent-active);
+    box-shadow: 4px 4px 0px 0px var(--accent-active);
+    transform: translate(-1px, -1px);
+}
+
+.back-to-library:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.back-to-library .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
+.header-nav-links {
+    display: none;
+    gap: 2rem;
+    align-items: center;
+    height: 100%;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .header-nav-links {
+        display: flex;
+    }
+}
+
+.nav-link {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    transition: color 150ms ease, border-color 150ms ease;
+    text-decoration: none;
+    border-bottom: 4px solid transparent;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-active);
+}
+
+.nav-link-active {
+    color: var(--text-primary);
+    border-bottom: 4px solid var(--accent-active);
+}
+
+.nav-link-active:hover {
+    color: var(--text-primary);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.signout-btn {
+    background-color: #e63b2e;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    border: 4px solid var(--text-primary);
+    box-shadow: 6px 6px 0px 0px var(--text-primary);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    line-height: 1.25rem;
+}
+
+.signout-btn:hover {
+    filter: invert(1);
+}
+
+.signout-btn:active {
+    box-shadow: 0px 0px 0px 0px var(--text-primary);
+    transform: translate(6px, 6px);
+}
+
+
+/* =========================================
+   4. MAIN LAYOUT
+========================================= */
+
+.main-container {
+    height: calc(100vh - 56px);
+    padding: 16px 14px;
+    background-color: var(--bg);
+    /* Dot grid — subtle but modern */
+    background-image: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px
+    );
+    background-size: 28px 28px;
+}
+
+.workspace {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+}
+
+
+/* =========================================
+   5. PANELS (LEFT + RIGHT)
+========================================= */
+
+.panel {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 0 0 0 var(--accent-active),
+        0 4px 24px rgba(0,0,0,0.4);
+    transition: box-shadow var(--transition-slow);
+}
+
+.source-panel,
+.preview-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================
+   6. PANEL HEADER
+========================================= */
+
+.panel-header {
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-bottom: 1.5px solid var(--border);
+    flex-shrink: 0;
+}
+
+.panel-header h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+}
+
+.panel-header p {
+    margin-top: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--accent-active);
+    text-transform: uppercase;
+    transition: color var(--transition-slow);
+}
+
+.preview-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+
+/* =========================================
+   7. SONG LIST (LEFT PANEL)
+========================================= */
+
+.song-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--surface);
+}
+
+.song-list::-webkit-scrollbar { width: 3px; }
+.song-list::-webkit-scrollbar-thumb { background: var(--border-mid); }
+
+/* Individual song row */
+.song-item {
+    padding: 9px 10px;
+    margin-bottom: 4px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    cursor: pointer;
+    border-radius: 2px;
+    position: relative;
+    transition:
+        background   var(--transition-fast),
+        border-color var(--transition-fast),
+        transform    var(--transition-fast);
+    /* Left accent bar */
+    border-left: 3px solid transparent;
+}
+
+.song-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent-active);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    pointer-events: none;
+}
+
+.song-item:hover {
+    border-left-color: var(--accent-active);
+    background: var(--surface-3);
+    transform: translateX(2px);
+}
+
+.song-item.active {
+    border-left-color: var(--accent-active);
+    background: var(--surface-3);
+    transform: translateX(3px);
+}
+
+.song-item-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-item-artist {
+    font-size: 9px;
+    margin-top: 2px;
+    color: var(--text-muted);
+}
+
+.song-item-bpm {
+    font-size: 9px;
+    font-weight: 700;
+    margin-top: 3px;
+    color: var(--text-dim);
+    transition: color var(--transition-fast);
+}
+
+.song-item.active .song-item-bpm,
+.song-item:hover .song-item-bpm {
+    color: var(--accent-active);
+}
+
+
+/* =========================================
+   8. MIDDLE PANEL
+========================================= */
+
+.middle-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    gap: 0;
+}
+
+.engine-heading {
+    text-align: center;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+
+/* Accent underline beneath heading */
+.engine-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 2px;
+    background: var(--accent-active);
+    transition: background var(--transition-slow), width var(--transition-mid);
+    border-radius: 1px;
+}
+
+.engine-heading h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 34px;
+    line-height: 36px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    color: var(--text-primary);
+}
+
+.engine-heading p {
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 17px;
+    color: var(--text-muted);
+}
+
+
+/* =========================================
+   9. ALGORITHM CARDS
+========================================= */
+
+.algorithm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+/* Per-preset accent — set via data-preset on each card */
+.algorithm-card[data-preset="romantic"]    { --card-accent: var(--accent-romantic);    }
+.algorithm-card[data-preset="energetic"]   { --card-accent: var(--accent-energetic);   }
+.algorithm-card[data-preset="thrill"]      { --card-accent: var(--accent-thrill);      }
+.algorithm-card[data-preset="chill"]       { --card-accent: var(--accent-chill);       }
+.algorithm-card[data-preset="feel_good"]   { --card-accent: var(--accent-feel_good);   }
+.algorithm-card[data-preset="melancholic"] { --card-accent: var(--accent-melancholic); }
+
+.algorithm-card {
+    --card-accent: var(--accent-romantic); /* fallback */
+    min-height: 64px;
+    padding: 10px 8px;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    color: var(--text-muted);
+    position: relative;
+    overflow: hidden;
+    transition:
+        color        var(--transition-fast),
+        border-color var(--transition-fast),
+        background   var(--transition-fast),
+        box-shadow   var(--transition-fast),
+        transform    var(--transition-fast);
+}
+
+/* Glow fill on hover */
+.algorithm-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-accent);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    pointer-events: none;
+}
+
+.algorithm-card:hover {
+    border-color: var(--card-accent);
+    color: var(--card-accent);
+    box-shadow:
+        0 0 12px rgba(0,0,0,0.4),
+        inset 0 0 0 1px var(--card-accent);
+    transform: translate(-1px, -2px);
+}
+
+.algorithm-card.active {
+    background: var(--card-accent);
+    border-color: var(--card-accent);
+    color: #0d0d0d;
+    box-shadow:
+        4px 4px 0 rgba(255,255,255,0.12),
+        0 0 20px rgba(0,0,0,0.5);
+    transform: translate(-1px, -1px);
+}
+
+.algorithm-card.active::before {
+    opacity: 0;
+}
+
+.algorithm-card span:last-child {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.algorithm-card .material-symbols-outlined {
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================
+   10. GENERATE BUTTON
+========================================= */
+
+.generate-button {
+    width: 100%;
+    margin-top: auto;
+    padding: 14px;
+    background: var(--accent-active);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 2px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition:
+        background    var(--transition-slow),
+        box-shadow    var(--transition-fast),
+        transform     var(--transition-fast);
+}
+
+.generate-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.15) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+.generate-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+}
+
+.generate-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.generate-button .material-symbols-outlined {
+    font-size: 18px;
+}
+
+
+/* =========================================
+   11. PREVIEW PANEL (RIGHT)
+========================================= */
+
+.preview-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--surface);
+}
+
+.preview-content::-webkit-scrollbar       { width: 3px; }
+.preview-content::-webkit-scrollbar-thumb { background: var(--border-mid); }
+
+
+/* =========================================
+   12. SEQUENCE HEADER CARD
+========================================= */
+
+.seq-header {
+    border-radius: 2px;
+    padding: 14px;
+    background: linear-gradient(
+        135deg,
+        var(--accent-active) 0%,
+        rgba(13, 13, 13, 0.95) 140%
+    );
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: background var(--transition-slow);
+}
+
+/* Subtle texture overlay */
+.seq-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+}
+
+.seq-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.seq-preset-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    color: white;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 9px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 1px;
+}
+
+.seq-export-btn {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 9px;
+    border: 1px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all var(--transition-fast);
+}
+
+.seq-export-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.seq-header-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    color: white;
+    position: relative;
+}
+
+.seq-header-artist {
+    font-size: 10px;
+    margin-top: 3px;
+    color: rgba(255,255,255,0.6);
+    position: relative;
+}
+
+.seq-meta {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.seq-meta span {
+    padding: 3px 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.75);
+    border-radius: 1px;
+    background: rgba(0,0,0,0.15);
+}
+
+
+/* =========================================
+   13. SEQUENCE LIST
+========================================= */
+
+.seq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+/* Entrance animation */
+@keyframes seq-item-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.seq-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px 7px;
+    border: 1.5px solid var(--border);
+    border-left: 3px solid transparent;
+    background: var(--surface-2);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    animation: seq-item-enter 0.3s ease both;
+    transition:
+        background    var(--transition-fast),
+        border-color  var(--transition-fast),
+        transform     var(--transition-fast);
+}
+
+.seq-item:hover {
+    background: var(--surface-3);
+    border-left-color: var(--accent-active);
+    transform: translateX(2px);
+}
+
+.seq-item-active {
+    background: var(--surface-3);
+    border-left-color: var(--accent-active) !important;
+    transform: translateX(3px);
+}
+
+.seq-num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 20px;
+    color: var(--accent-active);
+    opacity: 0.5;
+    transition: opacity var(--transition-fast), color var(--transition-slow);
+}
+
+.seq-item:hover .seq-num,
+.seq-item-active .seq-num {
+    opacity: 1;
+}
+
+.seq-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.seq-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+    letter-spacing: 0.2px;
+}
+
+.seq-artist {
+    font-size: 9px;
+    margin-top: 1px;
+    color: var(--text-muted);
+}
+
+/* Score bar */
+.seq-score-bar-wrap {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 5px;
+    width: 100%;
+    border-radius: 1px;
+    overflow: hidden;
+}
+
+.seq-score-bar {
+    height: 100%;
+    background: var(--accent-active);
+    border-radius: 1px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-slow);
+    position: relative;
+}
+
+/* Glow pulse on the score bar */
+.seq-score-bar::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: 0;
+    width: 6px;
+    height: 4px;
+    background: var(--accent-active);
+    filter: blur(3px);
+    opacity: 0.8;
+    transition: background var(--transition-slow);
+}
+
+.seq-right {
+    text-align: right;
+    min-width: 50px;
+    flex-shrink: 0;
+}
+
+.seq-bpm {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.seq-key {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.seq-pct {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 4px;
+    color: var(--accent-active);
+    transition: color var(--transition-slow);
+}
+
+
+/* =========================================
+   14. INLINE DETAIL CARD
+========================================= */
+
+.seq-detail-card {
+    border: 1.5px solid var(--border);
+    border-left: 3px solid var(--accent-active);
+    border-top: none;
+    padding: 10px 12px;
+    background: var(--surface-3);
+    margin-bottom: 3px;
+    border-radius: 0 0 2px 2px;
+    transition: border-color var(--transition-slow);
+    animation: seq-item-enter 0.2s ease both;
+}
+
+.seq-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.seq-detail-row:last-child {
+    border-bottom: none;
+}
+
+.seq-detail-row span:first-child {
+    color: var(--accent-active);
+    transition: color var(--transition-slow);
+}
+
+.seq-detail-row span:last-child {
+    color: rgba(240,236,227,0.6);
+    font-weight: 400;
+    text-transform: none;
+    font-size: 9px;
+}
+
+
+/* =========================================
+   15. SONG PREVIEW (click left panel song)
+========================================= */
+
+.now-playing {
+    border: 1.5px solid var(--border);
+    border-top: 3px solid var(--accent-active);
+    padding: 14px;
+    background: var(--surface-2);
+    border-radius: 0 0 2px 2px;
+    margin-bottom: 8px;
+    transition: border-top-color var(--transition-slow);
+}
+
+.now-playing-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin-top: 8px;
+}
+
+.now-playing-artist {
+    font-size: 11px;
+    margin-top: 4px;
+    color: var(--text-muted);
+}
+
+.song-stats {
+    display: flex;
+    gap: 5px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.song-stat {
+    padding: 4px 9px;
+    border: 1px solid var(--border-mid);
+    background: var(--surface-3);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+    border-radius: 1px;
+}
+
+.song-stat.yellow {
+    background: var(--accent-active);
+    color: #0d0d0d;
+    border-color: var(--accent-active);
+    transition: background var(--transition-slow), border-color var(--transition-slow);
+}
+
+/* "NEXT SONG" / SONG DETAILS section */
+.next-song {
+    margin-top: 8px;
+    border: 1.5px solid var(--border);
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-radius: 2px;
+}
+
+.next-song h3 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-active);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    transition: color var(--transition-slow);
+}
+
+.next-song-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.next-song-artist {
+    font-size: 10px;
+    margin-top: 3px;
+    color: var(--text-muted);
+}
+
+/* Stat rows (Energy, Danceability, Happiness) */
+.transition-cost {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 10px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* =========================================
+   16. EMPTY & LOADING STATES
+========================================= */
+
+.seq-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    text-align: center;
+    border: 1.5px dashed var(--border-mid);
+    border-radius: 2px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    gap: 10px;
+    color: var(--text-dim);
+}
+
+.seq-empty .material-symbols-outlined {
+    font-size: 28px;
+    color: var(--accent-active);
+    opacity: 0.4;
+    transition: color var(--transition-slow);
+}
+
+@keyframes loading-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 0.7; }
+}
+
+.seq-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 48px 20px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-active);
+    animation: loading-pulse 1.2s ease infinite;
+    transition: color var(--transition-slow);
+}
+
+
+/* =========================================
+   17. MOOD GRID (default empty state)
+========================================= */
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+.mood-box {
+    min-height: 56px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 2px;
+}
+
+.mood-box span:last-child {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.mood-box .material-symbols-outlined {
+    font-size: 14px;
+    color: var(--text-dim);
+}
+
+
+/* =========================================
+   18. LEGACY / SAFETY SELECTORS
+========================================= */
+
+.sequence-item {
+    padding: 10px;
+    margin-bottom: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 2px;
+}
+
+.sequence-number {
+    font-weight: 700;
+    font-size: 10px;
+    color: var(--accent-active);
+}
+
+.sequence-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex: 1;
+    margin-left: 8px;
+    color: var(--text-primary);
+}
+
+.sequence-bpm {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.play-next {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: var(--accent-active);
+    border: none;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #0d0d0d;
+    border-radius: 1px;
+    transition: background var(--transition-slow);
+}
+
+.play-next:active {
+    opacity: 0.8;
+}
+
+
+/* =========================================
+   19. RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        overflow-y: auto;
+    }
+
+    .main-container {
+        height: auto;
+    }
+
+    .panel {
+        min-height: 450px;
+    }
+
+    .middle-panel {
+        min-height: 450px;
+    }
+}

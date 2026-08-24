@@ -232,6 +232,9 @@ algorithmCards.forEach((card) => {
 
         selectedAlgorithm = text.replace(/\s+/g, "_");
 
+        // Drive the mood-reactive CSS accent system
+        document.body.dataset.preset = selectedAlgorithm;
+
         console.log("Selected Algorithm:", selectedAlgorithm);
 
     });
@@ -359,6 +362,9 @@ function displaySequence(sequence) {
         const item = document.createElement("div");
         item.classList.add("seq-item");
 
+        // Staggered entrance animation
+        item.style.animationDelay = `${index * 40}ms`;
+
         item.innerHTML = `
             <div class="seq-num">${String(index + 1).padStart(2, "0")}</div>
 
@@ -480,5 +486,8 @@ if (generateBtn) {
 // ======================================================
 // START APPLICATION
 // ======================================================
+
+// Initialize accent to match default selectedAlgorithm
+document.body.dataset.preset = selectedAlgorithm;
 
 loadSongs();
