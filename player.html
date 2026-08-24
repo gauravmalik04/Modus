@@ -166,13 +166,18 @@
 <!-- ── Standardized Navbar ─────────────────────────────────────────── -->
 <nav class="bg-background border-b-4 border-primary font-headline uppercase tracking-tighter font-black w-full top-0 z-50 sticky shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]" style="height:80px;">
     <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto h-full">
-        <!-- Brand -->
-        <a id="player-back-link" href="playlist_view.html" class="text-2xl font-black tracking-tighter text-primary uppercase flex items-center gap-3 group" title="Back to Playlist">
-            <div class="w-8 h-8 bg-surface-container-lowest brutal-border p-0.5 shadow-brutal transition-transform group-active:translate-x-1 group-active:translate-y-1 group-active:shadow-none flex items-center justify-center">
-                <img alt="MODUS Logo" class="w-full h-full object-cover" src="static/logo.png">
-            </div>
-            <span>MODUS</span>
-        </a>
+        <!-- Brand & Back -->
+        <div class="flex items-center gap-4">
+            <button onclick="window.history.back()" aria-label="Go Back" title="Go Back" class="w-8 h-8 bg-surface-container-lowest brutal-border shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] flex items-center justify-center transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none hover:bg-primary hover:text-white cursor-pointer group">
+                <span class="material-symbols-outlined font-bold text-xl">arrow_back</span>
+            </button>
+            <a id="player-back-link" href="playlist_view.html" class="text-2xl font-black tracking-tighter text-primary uppercase flex items-center gap-3 group" title="Back to Playlist">
+                <div class="w-8 h-8 bg-surface-container-lowest brutal-border p-0.5 shadow-brutal transition-transform group-active:translate-x-1 group-active:translate-y-1 group-active:shadow-none flex items-center justify-center">
+                    <img alt="MODUS Logo" class="w-full h-full object-cover" src="static/logo.png">
+                </div>
+                <span>MODUS</span>
+            </a>
+        </div>
         <!-- Nav Links -->
         <div class="hidden md:flex gap-8 items-center h-full mx-auto">
             <a class="nav-link-player active" href="library.html">Library</a>

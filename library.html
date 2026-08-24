@@ -20,7 +20,10 @@
     <!-- TopNavBar -->
     <header class="library-header">
         <div class="header-container">
-            <div class="header-logo-group">
+            <div class="header-logo-group" style="gap: 1rem;">
+                <button onclick="window.history.back()" aria-label="Go Back" title="Go Back" style="width:2rem;height:2rem;padding:0;display:flex;align-items:center;justify-content:center;background:#fff;border:4px solid #1a1a1a;box-shadow:4px 4px 0 0 #1a1a1a;cursor:pointer;">
+                    <span class="material-symbols-outlined font-bold" style="font-size:1.25rem;">arrow_back</span>
+                </button>
                 <a class="header-logo-link" href="library.html">
                     <div class="header-logo-box brutalist-border brutalist-shadow">
                         <img src="static/logo.png" alt="MODUS Logo" class="header-logo-img">
@@ -30,8 +33,8 @@
             </div>
             <!-- Navigation Links (Web) -->
             <nav class="header-nav-links">
-                <a class="nav-link" href="resequence.html">Sequencer</a>
                 <a class="nav-link nav-link-active" href="library.html">Library</a>
+                <a class="nav-link" href="resequence.html">Sequencer</a>
             </nav>
             <div class="header-actions">
                 <button id="logout-btn" class="signout-btn brutal-button" title="Sign Out">Sign Out</button>

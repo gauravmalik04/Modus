@@ -118,18 +118,22 @@
 <!-- TopNavBar -->
 <nav class="bg-background dark:bg-background text-primary dark:text-primary font-headline uppercase tracking-tighter font-black w-full top-0 border-b-4 border-primary dark:border-primary shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] z-50 sticky">
 <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
-<!-- Brand -->
-<a class="text-2xl font-black tracking-tighter text-primary dark:text-primary uppercase flex items-center gap-3 group" href="library.html">
-    <div class="w-8 h-8 bg-surface-container-lowest brutal-border p-0.5 brutal-shadow transition-transform group-active:translate-x-1 group-active:translate-y-1 group-active:shadow-none flex items-center justify-center">
-        <img alt="MODUS Logo" class="w-full h-full object-cover" src="static/logo.png">
-    </div>
-    <span>MODUS</span>
-</a>
+<!-- Brand & Back -->
+<div class="flex items-center gap-4">
+    <button onclick="window.history.back()" aria-label="Go Back" title="Go Back" class="w-8 h-8 bg-surface-container-lowest brutal-border shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] flex items-center justify-center transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none hover:bg-primary hover:text-white cursor-pointer group">
+        <span class="material-symbols-outlined font-bold text-xl">arrow_back</span>
+    </button>
+    <a class="text-2xl font-black tracking-tighter text-primary dark:text-primary uppercase flex items-center gap-3 group" href="library.html">
+        <div class="w-8 h-8 bg-surface-container-lowest brutal-border p-0.5 brutal-shadow transition-transform group-active:translate-x-1 group-active:translate-y-1 group-active:shadow-none flex items-center justify-center">
+            <img alt="MODUS Logo" class="w-full h-full object-cover" src="static/logo.png">
+        </div>
+        <span>MODUS</span>
+    </a>
+</div>
 <!-- Navigation Links (Web) -->
 <div class="hidden md:flex gap-8 items-center h-full mx-auto">
-<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-150 px-3 py-1 border-b-4 border-transparent hover:border-secondary" href="resequence.html">Sequencer</a>
 <a class="text-primary dark:text-primary border-b-4 border-secondary pb-1 px-3 py-1" href="library.html">Library</a>
-
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-150 px-3 py-1 border-b-4 border-transparent hover:border-secondary" href="resequence.html">Sequencer</a>
 </div>
 <!-- Actions -->
 
