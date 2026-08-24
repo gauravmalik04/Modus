@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/library.css">
-    <!-- Auth Guard: no session → back to login -->
+    <!-- Auth Guard: no session â†’ back to login -->
     <script>
       try {
         if (!JSON.parse(sessionStorage.getItem('modus_session'))) {
@@ -15,6 +15,7 @@
         }
       } catch(e) { window.location.replace('login.html'); }
     </script>
+    <link rel="icon" type="image/png" href="static/logo.png">
 </head>
 <body class="library-body">
     <!-- TopNavBar -->
@@ -75,7 +76,7 @@
             <img src="static/logo.png" alt="MODUS Logo">
         </div>
         <div class="footer-copyright">
-            © 2024 MODUS SYSTEMS. ALL RIGHTS RESERVED.
+            Â© 2024 MODUS SYSTEMS. ALL RIGHTS RESERVED.
         </div>
         <nav class="footer-nav">
             <a class="footer-link" href="#">Documentation</a>

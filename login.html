@@ -14,7 +14,7 @@
         rel="stylesheet">
     <!-- Modus Authentication Stylesheet -->
     <link rel="stylesheet" href="css/login.css">
-    <!-- Auth Guard: already logged in → skip to playlists -->
+    <!-- Auth Guard: already logged in â†’ skip to playlists -->
     <script>
       try {
         if (JSON.parse(sessionStorage.getItem('modus_session'))) {
@@ -22,6 +22,7 @@
         }
       } catch (e) {}
     </script>
+    <link rel="icon" type="image/png" href="static/logo.png">
 </head>
 
 <body>
@@ -79,7 +80,7 @@
                             <label class="form-label" for="login-password">Password</label>
                             <div class="input-wrapper">
                                 <input class="neo-input has-icon" id="login-password" name="password"
-                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" type="password" autocomplete="off" required>
                                 <button class="password-toggle-btn" type="button" id="login-password-toggle"
                                     aria-label="Toggle password visibility" data-target="login-password">
                                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
@@ -156,7 +157,7 @@
                             <label class="form-label" for="signup-password">Password</label>
                             <div class="input-wrapper">
                                 <input class="neo-input has-icon" id="signup-password" name="password"
-                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" type="password" autocomplete="off" required>
                                 <button class="password-toggle-btn" type="button" id="signup-password-toggle"
                                     aria-label="Toggle password visibility" data-target="signup-password">
                                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
@@ -180,7 +181,7 @@
                             <label class="form-label" for="signup-confirm-password">Confirm Password</label>
                             <div class="input-wrapper">
                                 <input class="neo-input has-icon" id="signup-confirm-password" name="confirmPassword"
-                                    placeholder="••••••••" type="password" autocomplete="off" required>
+                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" type="password" autocomplete="off" required>
                                 <button class="password-toggle-btn" type="button" id="signup-confirm-toggle"
                                     aria-label="Toggle confirm password visibility" data-target="signup-confirm-password">
                                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>

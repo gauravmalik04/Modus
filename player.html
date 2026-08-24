@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>MODUS - Now Playing</title>
-<meta name="description" content="Modus Now Playing — full-screen player with queue and transport controls.">
+<meta name="description" content="Modus Now Playing â€” full-screen player with queue and transport controls.">
 <!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <!-- Google Fonts: Space Grotesk & Inter -->
@@ -86,7 +86,7 @@
     .brutal-border-3 { border: 3px solid #1a1a1a; }
     .brutal-border-b { border-bottom: 4px solid #1a1a1a; }
 
-    /* Nav link hover — no black fill on hover */
+    /* Nav link hover â€” no black fill on hover */
     .nav-link-player {
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
@@ -141,7 +141,7 @@
         }
     }
 
-    /* Queue panel — scrollable, full height */
+    /* Queue panel â€” scrollable, full height */
     .queue-panel {
         border-left: 0;
         overflow-y: auto;
@@ -160,10 +160,11 @@
     .queue-panel::-webkit-scrollbar-track { background: #f5f0e8; }
     .queue-panel::-webkit-scrollbar-thumb { background: #1a1a1a; }
 </style>
+    <link rel="icon" type="image/png" href="static/logo.png">
 </head>
 <body class="bg-background text-primary font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
 
-<!-- ── Standardized Navbar ─────────────────────────────────────────── -->
+<!-- â”€â”€ Standardized Navbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <nav class="bg-background border-b-4 border-primary font-headline uppercase tracking-tighter font-black w-full top-0 z-50 sticky shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]" style="height:80px;">
     <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto h-full">
         <!-- Brand & Back -->
@@ -188,7 +189,7 @@
     </div>
 </nav>
 
-<!-- ── Main — Side-by-side: Player (60%) | Queue (40%) ─────────────── -->
+<!-- â”€â”€ Main â€” Side-by-side: Player (60%) | Queue (40%) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="player-layout flex-grow">
 
     <!-- LEFT: Player Panel -->
@@ -216,14 +217,14 @@
 
                     <!-- Badges -->
                     <div class="flex items-center gap-3 flex-wrap">
-                        <span id="player-mood-badge" class="font-headline font-bold uppercase px-3 py-1 brutal-border-3 text-xs tracking-widest shadow-brutal inline-block" style="background-color:#ffcc00;color:#1a1a1a;">MS: —</span>
-                        <span id="player-genre" class="font-headline uppercase font-bold text-sm tracking-widest opacity-80">—</span>
+                        <span id="player-mood-badge" class="font-headline font-bold uppercase px-3 py-1 brutal-border-3 text-xs tracking-widest shadow-brutal inline-block" style="background-color:#ffcc00;color:#1a1a1a;">MS: â€”</span>
+                        <span id="player-genre" class="font-headline uppercase font-bold text-sm tracking-widest opacity-80">â€”</span>
                     </div>
 
                     <!-- Title / Artist -->
                     <div>
-                        <h1 id="player-track-title" class="font-headline text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-none" style="color:#ffffff;">LOADING…</h1>
-                        <h2 id="player-artist" class="font-headline text-lg md:text-xl font-bold uppercase tracking-tight mt-1" style="color:rgba(255,255,255,0.75);">—</h2>
+                        <h1 id="player-track-title" class="font-headline text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-none" style="color:#ffffff;">LOADINGâ€¦</h1>
+                        <h2 id="player-artist" class="font-headline text-lg md:text-xl font-bold uppercase tracking-tight mt-1" style="color:rgba(255,255,255,0.75);">â€”</h2>
                     </div>
 
                     <!-- Progress Bar -->
@@ -288,11 +289,11 @@
 
 </div>
 
-<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <footer class="bg-primary text-surface-container-lowest font-label text-xs uppercase tracking-widest w-full border-t-4 border-primary mt-12">
     <div class="flex flex-col md:flex-row justify-between items-center px-6 py-8 w-full gap-4 max-w-7xl mx-auto">
         <div class="text-lg font-black text-secondary">MODUS</div>
-        <div class="text-center opacity-60">© 2024 MODUS. FORM FOLLOWS FUNCTION.</div>
+        <div class="text-center opacity-60">Â© 2024 MODUS. FORM FOLLOWS FUNCTION.</div>
         <nav class="flex gap-6">
             <a class="opacity-80 hover:text-secondary transition-colors" href="#">Terms</a>
             <a class="opacity-80 hover:text-secondary transition-colors" href="#">Manual</a>
