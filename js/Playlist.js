@@ -35,6 +35,40 @@ export class Playlist {
         return this.songs.reduce((sum, s) => sum + (Number(s.duration_ms) || 0), 0);
     }
 
+    static PRESET_LABELS = {
+        romantic: 'Romantic',
+        energetic: 'Energetic',
+        thrill: 'Thrill',
+        chill: 'Chill',
+        feel_good: 'Feel Good',
+        melancholic: 'Melancholic',
+    };
+
+    /** Top mood preset and score across all songs in the playlist */
+    get topMood() {
+        if (!this.songs.length) return { key: 'mix', name: 'Mix', score: 0 };
+        const presets = ['romantic', 'energetic', 'thrill', 'chill', 'feel_good', 'melancholic'];
+        const averages = {};
+
+        presets.forEach(p => {
+            const total = this.songs.reduce((sum, s) => sum + (Number(s.presets?.[p]) || 0), 0);
+            averages[p] = total / this.songs.length;
+        });
+
+        let topKey = presets[0];
+        for (const p of presets) {
+            if (averages[p] > averages[topKey]) {
+                topKey = p;
+            }
+        }
+
+        return {
+            key: topKey,
+            name: Playlist.PRESET_LABELS[topKey] || topKey,
+            score: Math.round(averages[topKey] * 100),
+        };
+    }
+
     /**
      * Human-readable duration label, e.g. "1h 12m" or "45m"
      */
@@ -72,7 +106,7 @@ export class Playlist {
             description: meta.description ?? 'Your full collection — ready to sequence.',
             coverImage:  meta.coverImage  ?? '',
             moodScore:   meta.moodScore   ?? moodScore,
-            tags:        meta.tags        ?? ['Focus', 'Ambient'],
+            tags:        meta.tags        ?? ['Mix'],
             songs,
         });
     }

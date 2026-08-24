@@ -36,7 +36,7 @@ async function init() {
             name:        'Dummy Playlist',
             description: 'Your full collection — ready to sequence.',
             coverImage:  COVER_IMAGE,
-            tags:        ['Focus', 'Ambient'],
+            tags:        ['Mix'],
         });
 
         renderCard(playlist);
@@ -51,9 +51,25 @@ async function init() {
     }
 }
 
+function getTagClass(tag) {
+    const key = String(tag).toLowerCase().replace(/[^a-z0-9]/g, '_');
+    if (key.includes('romantic')) return 'card-tag-romantic';
+    if (key.includes('energetic')) return 'card-tag-energetic';
+    if (key.includes('thrill')) return 'card-tag-thrill';
+    if (key.includes('chill')) return 'card-tag-chill';
+    if (key.includes('feel_good') || key.includes('feelgood')) return 'card-tag-feel_good';
+    if (key.includes('melancholic')) return 'card-tag-melancholic';
+    if (key.includes('mix')) return 'card-tag-mix';
+    return 'card-tag-ambient';
+}
+
 function renderCard(playlist) {
     if (!grid) return;
     grid.innerHTML = '';
+
+    const topMood = playlist.topMood;
+    const moodTagLabel = `${topMood.name} ${topMood.score}`;
+    const displayTags = [...new Set([...playlist.tags, moodTagLabel])];
 
     const article = document.createElement('article');
     article.className = 'library-card brutalist-border brutalist-shadow';
@@ -67,7 +83,6 @@ function renderCard(playlist) {
                  style="background-image: url('${playlist.coverImage}');"
                  role="img" aria-label="Cover art for ${playlist.name}">
             </div>
-            <div class="card-score brutalist-border">MS: ${playlist.moodScore}</div>
         </div>
         <div class="card-content">
             <h3 class="card-title">${playlist.name}</h3>
@@ -82,15 +97,28 @@ function renderCard(playlist) {
                 </span>
             </div>
             <div class="card-tags">
-                ${playlist.tags.map((tag, i) =>
-                    `<span class="card-tag ${i === 0 ? 'card-tag-focus' : 'card-tag-ambient'} brutalist-border">${tag}</span>`
+                ${displayTags.map((tag) =>
+                    `<span class="card-tag ${getTagClass(tag)} brutalist-border">${tag}</span>`
                 ).join('')}
             </div>
             <p class="card-description">${playlist.description}</p>
         </div>
     `;
 
-    const navigate = () => { window.location.href = 'playlist_view.html'; };
+    const navigate = () => {
+        try {
+            sessionStorage.setItem('modus_selected_playlist', JSON.stringify({
+                id:          playlist.id,
+                name:        playlist.name,
+                description: playlist.description,
+                coverImage:  playlist.coverImage,
+                moodScore:   topMood.score,
+                topMood:     topMood,
+                tags:        displayTags,
+            }));
+        } catch (e) {}
+        window.location.href = 'playlist_view.html';
+    };
     article.addEventListener('click', navigate);
     article.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(); }

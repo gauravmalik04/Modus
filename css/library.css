@@ -9,6 +9,15 @@
     --color-on-tertiary: #ffffff;
     --color-on-surface-variant: #4a4a4a;
     
+    /* Global Mood Color Palette */
+    --mood-romantic:    #ff6b9d;
+    --mood-energetic:   #ff5c00;
+    --mood-thrill:      #a855f7;
+    --mood-chill:       #00cfff;
+    --mood-feel_good:   #ffe600;
+    --mood-melancholic: #7b8cff;
+    --mood-mix:         #ffcc00;
+    
     --font-headline: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-label: 'Space Grotesk', sans-serif;
@@ -376,8 +385,9 @@ button {
 
 .card-meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem 1rem;
     color: var(--color-on-surface-variant);
     font-family: var(--font-body);
     font-size: 0.875rem;
@@ -396,8 +406,9 @@ button {
 }
 
 .card-tags {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
 }
 
@@ -409,9 +420,41 @@ button {
     text-transform: uppercase;
 }
 
+.card-tag-mix,
 .card-tag-focus {
-    background-color: var(--color-primary-fixed);
+    background-color: var(--mood-mix);
     color: var(--color-primary);
+}
+
+.card-tag-romantic {
+    background-color: var(--mood-romantic);
+    color: #1a1a1a;
+}
+
+.card-tag-energetic {
+    background-color: var(--mood-energetic);
+    color: #ffffff;
+}
+
+.card-tag-thrill {
+    background-color: var(--mood-thrill);
+    color: #ffffff;
+}
+
+.card-tag-chill {
+    background-color: var(--mood-chill);
+    color: #1a1a1a;
+}
+
+.card-tag-feel_good,
+.card-tag-feel-good {
+    background-color: var(--mood-feel_good);
+    color: #1a1a1a;
+}
+
+.card-tag-melancholic {
+    background-color: var(--mood-melancholic);
+    color: #ffffff;
 }
 
 .card-tag-ambient {
