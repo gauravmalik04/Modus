@@ -501,25 +501,22 @@ body {
 ========================================= */
 
 .generate-button {
-
     width: 100%;
+    align-self: stretch;
+    flex-shrink: 0;
 
     margin-top: auto;
 
     padding: 14px;
 
     background: var(--yellow);
-
     color: var(--black);
 
     border: 3px solid var(--black);
-
     box-shadow: 5px 5px 0 var(--black);
 
     font-family: "Space Grotesk", sans-serif;
-
     font-size: 17px;
-
     font-weight: 700;
 
     text-transform: uppercase;
@@ -527,9 +524,7 @@ body {
     cursor: pointer;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     gap: 8px;
@@ -884,9 +879,12 @@ body {
 
         min-height: 500px;
     }
-
     .middle-panel {
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
 
-        min-height: 500px;
+        width: 100%;
     }
-}
+}   
+

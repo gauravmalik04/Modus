@@ -473,26 +473,17 @@ function generateSequence() {
     if (songs.length === 0) {
 
         alert("No songs available.");
-
         return;
 
     }
 
 
-    // Copy songs
-    const sequence =
-        [...songs];
+    // Songs ki copy banao
+    const sequence = [...songs];
 
 
-    // Highest mood score first
-    sequence.sort((a, b) => {
-
-        return (
-            getPresetScore(b) -
-            getPresetScore(a)
-        );
-
-    });
+    // Har baar random order
+    sequence.sort(() => Math.random() - 0.5);
 
 
     console.log(
@@ -501,6 +492,7 @@ function generateSequence() {
     );
 
 
+    // Preview mein show karo
     displaySequence(sequence);
 
 }
