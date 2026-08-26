@@ -245,5 +245,19 @@
     <!-- Your JavaScript -->
     <script type="module" src="js/pages/resequence.js"></script>
 
+    <!-- Export-to-Library Modal -->
+    <div id="export-modal" class="export-modal-overlay" hidden>
+        <div class="export-modal-box brutal-border brutal-shadow">
+            <h2 class="export-modal-title">Name Your Playlist</h2>
+            <p class="export-modal-sub">Give your sequenced playlist a name before saving it to your library.</p>
+            <input id="export-name-input" class="export-name-input" type="text" placeholder="e.g. Late Night Vibes" maxlength="60" />
+            <div id="export-error-msg" class="export-error-msg" style="display: none; color: #ff6b9d; font-size: 11px; margin-top: 5px;"></div>
+            <div class="export-modal-actions">
+                <button id="export-cancel-btn" class="export-btn-cancel brutalist-button">Cancel</button>
+                <button id="export-confirm-btn" class="export-btn-confirm brutalist-button">Save to Library</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

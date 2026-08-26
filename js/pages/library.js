@@ -6,6 +6,7 @@
 
 import { Playlist } from '../Playlist.js';
 import { launchPlayer } from '../utils/playerLauncher.js';
+import { LibraryStore } from '../libraryStore.js';
 
 // ── Auth Guard ──────────────────────────────────────────────────────────────
 (function guardSession() {
@@ -28,19 +29,29 @@ const filterBtns = document.querySelectorAll('.filter-btn, .filter-btn-active');
 // ── Load & Render ─────────────────────────────────────────────────────────────
 async function init() {
     try {
+        if (grid) grid.innerHTML = '';
+
         const response = await fetch('./data/music_features.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
-        const playlist = Playlist.fromJSON(data, {
+        // 1. Default Playlist
+        const defaultPlaylist = Playlist.fromJSON(data, {
             id:          'playlist_default',
             name:        'Dummy Playlist',
             description: 'Your full collection — ready to sequence.',
             coverImage:  COVER_IMAGE,
             tags:        ['Mix'],
         });
+        renderCard(defaultPlaylist);
 
-        renderCard(playlist);
+        // 2. Saved Playlists from LibraryStore
+        const savedPlaylists = LibraryStore.getAll();
+        savedPlaylists.forEach(savedData => {
+            const playlist = new Playlist(savedData);
+            renderCard(playlist);
+        });
+
     } catch (err) {
         console.error('Library: failed to load data:', err);
         if (grid) {
@@ -66,7 +77,6 @@ function getTagClass(tag) {
 
 function renderCard(playlist) {
     if (!grid) return;
-    grid.innerHTML = '';
 
     const topMood = playlist.topMood;
     const moodTagLabel = `${topMood.name} ${topMood.score}`;
@@ -78,12 +88,21 @@ function renderCard(playlist) {
     article.setAttribute('tabindex', '0');
     article.setAttribute('aria-label', `Open playlist: ${playlist.name}`);
 
+    const moodClass = getTagClass(topMood.name);
+    const imageHTML = playlist.coverImage 
+        ? `<div class="card-image brutalist-border" style="background-image: url('${playlist.coverImage}');" role="img" aria-label="Cover art for ${playlist.name}"></div>`
+        : `<div class="card-image brutalist-border no-cover ${moodClass}" role="img" aria-label="No cover available"></div>`;
+
+    const deleteHTML = playlist.id !== 'playlist_default'
+        ? `<button class="card-delete-btn brutalist-border" aria-label="Delete playlist" title="Delete playlist">
+               <span class="material-symbols-outlined">close</span>
+           </button>`
+        : '';
+
     article.innerHTML = `
         <div class="card-image-container">
-            <div class="card-image brutalist-border"
-                 style="background-image: url('${playlist.coverImage}');"
-                 role="img" aria-label="Cover art for ${playlist.name}">
-            </div>
+            ${imageHTML}
+            ${deleteHTML}
             <button id="library-play-btn" class="card-play-btn brutalist-border" aria-label="Play playlist" title="Play playlist">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
             </button>
@@ -115,6 +134,19 @@ function renderCard(playlist) {
         playBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             launchPlayer(playlist, playlist.songs, 0);
+        });
+    }
+
+    // Wire delete button
+    const deleteBtn = article.querySelector('.card-delete-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm(`Are you sure you want to delete "${playlist.name}"?`)) {
+                LibraryStore.remove(playlist.id);
+                // Re-render library
+                init();
+            }
         });
     }
 

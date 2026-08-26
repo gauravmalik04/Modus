@@ -5,6 +5,7 @@
 
 import { Playlist } from '../Playlist.js';
 import { launchPlayer } from '../utils/playerLauncher.js';
+import { LibraryStore } from '../libraryStore.js';
 
 // ── Global Mood Palette ──────────────────────────────────────────────────────
 export const MOOD_COLORS = {
@@ -53,6 +54,7 @@ const trackListEl   = document.getElementById('track-list');
 const playBtn       = document.getElementById('play-btn');
 const playBtnText   = document.getElementById('play-btn-text');
 const resequenceBtn = document.getElementById('resequence-btn');
+const deleteBtn     = document.getElementById('delete-btn');
 const logoutBtn     = document.getElementById('logout-btn');
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -80,10 +82,6 @@ function formatTotalDuration(ms) {
 // ── Initialize & Load Playlist Data ──────────────────────────────────────────
 async function init() {
     try {
-        const response = await fetch('./data/music_features.json');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-
         // Read stored playlist metadata if available from library selection
         let storedMeta = {};
         try {
@@ -93,15 +91,32 @@ async function init() {
             console.warn('Could not parse stored playlist metadata:', e);
         }
 
-        // Build Playlist model instance
-        currentPlaylist = Playlist.fromJSON(data, {
-            id:          storedMeta.id          ?? 'playlist_default',
-            name:        storedMeta.name        ?? 'Dummy Playlist',
-            description: storedMeta.description ?? 'Your full collection — ready to sequence.',
-            coverImage:  storedMeta.coverImage  ?? DEFAULT_COVER,
-            moodScore:   storedMeta.moodScore   ?? undefined,
-            tags:        storedMeta.tags        ?? ['Mix'],
-        });
+        if (storedMeta.id && storedMeta.id !== 'playlist_default') {
+            const savedData = LibraryStore.getAll().find(p => p.id === storedMeta.id);
+            if (savedData) {
+                currentPlaylist = new Playlist(savedData);
+            }
+        }
+
+        if (!currentPlaylist) {
+            const response = await fetch('./data/music_features.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+
+            // Build Playlist model instance
+            currentPlaylist = Playlist.fromJSON(data, {
+                id:          storedMeta.id          ?? 'playlist_default',
+                name:        storedMeta.name        ?? 'Dummy Playlist',
+                description: storedMeta.description ?? 'Your full collection — ready to sequence.',
+                coverImage:  storedMeta.coverImage  ?? DEFAULT_COVER,
+                moodScore:   storedMeta.moodScore   ?? undefined,
+                tags:        storedMeta.tags        ?? ['Mix'],
+            });
+        }
+
+        if (currentPlaylist.id !== 'playlist_default' && deleteBtn) {
+            deleteBtn.classList.remove('hidden');
+        }
 
         renderHero(currentPlaylist);
         renderTracks(currentPlaylist.songs);
@@ -249,6 +264,19 @@ if (playBtn) {
 if (resequenceBtn) {
     resequenceBtn.addEventListener('click', () => {
         window.location.href = 'resequence.html';
+    });
+}
+
+// ── Delete Button Handler ────────────────────────────────────────────────────
+if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+        if (!currentPlaylist || currentPlaylist.id === 'playlist_default') return;
+        
+        if (confirm(`Are you sure you want to delete "${currentPlaylist.name}"?`)) {
+            LibraryStore.remove(currentPlaylist.id);
+            sessionStorage.removeItem('modus_selected_playlist');
+            window.location.replace('library.html');
+        }
     });
 }
 

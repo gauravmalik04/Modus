@@ -349,6 +349,53 @@ button {
     background-position: center;
 }
 
+.card-image.no-cover {
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.card-image.no-cover.card-tag-romantic { background-color: var(--mood-romantic); }
+.card-image.no-cover.card-tag-energetic { background-color: var(--mood-energetic); }
+.card-image.no-cover.card-tag-thrill { background-color: var(--mood-thrill); }
+.card-image.no-cover.card-tag-chill { background-color: var(--mood-chill); }
+.card-image.no-cover.card-tag-feel_good,
+.card-image.no-cover.card-tag-feel-good { background-color: var(--mood-feel_good); }
+.card-image.no-cover.card-tag-melancholic { background-color: var(--mood-melancholic); }
+.card-image.no-cover.card-tag-mix { background-color: var(--mood-mix); }
+.card-image.no-cover.card-tag-ambient { background-color: var(--color-surface-dim); }
+
+/* Delete button overlaid top-right of cover art */
+.card-delete-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: var(--color-secondary);
+    color: var(--color-on-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid var(--color-primary);
+    box-shadow: 4px 4px 0px 0px var(--color-primary);
+    transition: transform 100ms ease, box-shadow 100ms ease, background-color 100ms ease;
+    z-index: 2;
+}
+
+.card-delete-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+.card-delete-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.card-delete-btn .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
 /* Play button overlaid bottom-right of cover art */
 .card-play-btn {
     position: absolute;

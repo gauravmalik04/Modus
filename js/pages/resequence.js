@@ -4,6 +4,7 @@
 
 import { PlaylistSequencer } from '../../pipeline/PlaylistSequencer.js';
 import { PRESET_THRESHOLDS }  from '../../pipeline/thresholds.js';
+import { LibraryStore } from '../libraryStore.js';
 
 
 // ======================================================
@@ -23,6 +24,7 @@ const previewMeta   = document.querySelector(".preview-header p");
 
 let songs             = [];
 let selectedAlgorithm = "romantic";
+let currentSequence   = [];
 
 
 // ======================================================
@@ -30,21 +32,30 @@ let selectedAlgorithm = "romantic";
 // ======================================================
 
 async function loadSongs() {
-
     try {
-
-        const response = await fetch("./data/music_features.json");
-
-        if (!response.ok) {
-            throw new Error(
-                `songs.json could not be loaded. Status: ${response.status}`
-            );
+        let storedMeta = {};
+        try {
+            const raw = sessionStorage.getItem('modus_selected_playlist');
+            if (raw) storedMeta = JSON.parse(raw);
+        } catch (e) {
+            console.warn('Could not parse stored playlist metadata:', e);
         }
 
-        const data = await response.json();
+        if (storedMeta.id && storedMeta.id !== 'playlist_default') {
+            const savedData = LibraryStore.getAll().find(p => p.id === storedMeta.id);
+            if (savedData && Array.isArray(savedData.songs)) {
+                songs = savedData.songs;
+            }
+        }
 
-        // JSON structure: { "songs": [...] }
-        songs = Array.isArray(data.songs) ? data.songs : [];
+        if (!songs || songs.length === 0) {
+            const response = await fetch("./data/music_features.json");
+            if (!response.ok) {
+                throw new Error(`songs.json could not be loaded. Status: ${response.status}`);
+            }
+            const data = await response.json();
+            songs = Array.isArray(data.songs) ? data.songs : [];
+        }
 
         console.log("Songs Loaded:", songs.length);
 
@@ -286,6 +297,7 @@ function generateSequence() {
 // ======================================================
 
 function displaySequence(sequence) {
+    currentSequence = sequence;
 
     if (!previewPanel) return;
 
@@ -332,7 +344,7 @@ function displaySequence(sequence) {
     header.innerHTML = `
         <div class="seq-header-top">
             <div class="seq-preset-badge">${prettyName}</div>
-            <button class="seq-export-btn" onclick="alert('Export to Library functionality coming soon!')">Export to Library</button>
+            <button id="seq-export-btn" class="seq-export-btn">Export to Library</button>
         </div>
         <div class="seq-header-title">${seed.name || "—"}</div>
         <div class="seq-header-artist">${seed.artist || "—"}</div>
@@ -343,6 +355,11 @@ function displaySequence(sequence) {
         </div>
     `;
     previewPanel.appendChild(header);
+
+    const exportBtn = header.querySelector("#seq-export-btn");
+    if (exportBtn) {
+        exportBtn.addEventListener("click", openExportModal);
+    }
 
 
     // ── Sequence list ────────────────────────────────────
@@ -458,6 +475,88 @@ function showSongPreviewInline(song, itemEl) {
 
 }
 
+
+// ======================================================
+// EXPORT TO LIBRARY MODAL
+// ======================================================
+
+const exportModal = document.getElementById("export-modal");
+const exportNameInput = document.getElementById("export-name-input");
+const exportConfirmBtn = document.getElementById("export-confirm-btn");
+const exportCancelBtn = document.getElementById("export-cancel-btn");
+const exportErrorMsg = document.getElementById("export-error-msg");
+
+function openExportModal() {
+    if (!currentSequence || currentSequence.length === 0) return;
+    
+    if (exportModal) {
+        exportModal.hidden = false;
+        const prettyName = selectedAlgorithm.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+        exportNameInput.value = `${prettyName} Mix`;
+        exportNameInput.focus();
+        exportNameInput.select();
+        exportErrorMsg.style.display = "none";
+    }
+}
+
+function closeExportModal() {
+    if (exportModal) exportModal.hidden = true;
+    exportErrorMsg.style.display = "none";
+}
+
+function confirmExport() {
+    const name = exportNameInput.value.trim();
+    if (!name) {
+        exportErrorMsg.textContent = "Please enter a playlist name.";
+        exportErrorMsg.style.display = "block";
+        return;
+    }
+
+    if (LibraryStore.isNameTaken(name)) {
+        exportErrorMsg.textContent = "A playlist with this name already exists.";
+        exportErrorMsg.style.display = "block";
+        return;
+    }
+
+    const prettyName = selectedAlgorithm.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    
+    const playlist = {
+        id: 'seq_' + Date.now().toString(36),
+        name: name,
+        description: `${prettyName} sequence • ${currentSequence.length} tracks`,
+        coverImage: '',
+        tags: [prettyName],
+        songs: currentSequence,
+        createdAt: new Date().toISOString()
+    };
+
+    LibraryStore.add(playlist);
+
+    // Show temporary toast on the export button
+    const exportBtn = document.getElementById("seq-export-btn");
+    if (exportBtn) {
+        const originalText = exportBtn.textContent;
+        exportBtn.textContent = "Saved!";
+        exportBtn.style.color = "var(--accent-active)";
+        exportBtn.style.borderColor = "var(--accent-active)";
+        setTimeout(() => {
+            exportBtn.textContent = originalText;
+            exportBtn.style.color = "";
+            exportBtn.style.borderColor = "";
+        }, 2000);
+    }
+
+    closeExportModal();
+}
+
+if (exportCancelBtn) exportCancelBtn.addEventListener("click", closeExportModal);
+if (exportConfirmBtn) exportConfirmBtn.addEventListener("click", confirmExport);
+if (exportNameInput) {
+    exportNameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") confirmExport();
+        if (e.key === "Escape") closeExportModal();
+    });
+}
 
 // ======================================================
 // LOGOUT BUTTON
