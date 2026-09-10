@@ -2,6 +2,8 @@
 
 > **Mood-based, transition-aware music player** — *"Sequence Your Soul"*
 
+🚀 **Live Demo / Deployment:** [https://modus-pearl.vercel.app/](https://modus-pearl.vercel.app/)
+
 Modus is a browser-based music application that generates **mood-aware, harmonically-smooth playlists** from a curated song library. Instead of random shuffle, Modus scores every song against six emotional presets and sequences them using the **Camelot Wheel**, BPM proximity, and timbre matching to create seamless listening journeys.
 
 ---
