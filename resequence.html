@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Modus - Resequence</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Material Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/resequence.css">
+    <link rel="icon" type="image/png" href="static/logo.png">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+        <div class="topbar-container">
+            <div class="header-brand-group">
+                <button onclick="window.history.back()" class="back-to-library brutal-button" aria-label="Go Back" title="Go Back" style="cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+
+                <a href="library.html" class="brand-link">
+                    <div class="logo-box brutal-border brutal-shadow">
+                        <img src="static/logo.png" alt="MODUS Logo" class="logo-img">
+                    </div>
+                    <span class="logo-text">MODUS</span>
+                </a>
+            </div>
+
+            <!-- Navigation Links (Web) -->
+            <nav class="header-nav-links">
+                <a class="nav-link" href="library.html">Library</a>
+                <a class="nav-link nav-link-active" href="resequence.html">Sequencer</a>
+            </nav>
+
+            <div class="header-right">
+                <button id="logout-btn" class="signout-btn brutal-button" title="Sign Out">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-container">
+
+        <div class="workspace">
+
+
+            <!-- ================= LEFT ================= -->
+
+            <section class="panel source-panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        Source: Deep Focus Mix
+                    </h2>
+
+                    <p>
+                        10 TRACKS Ã¢â‚¬Â¢ 32M
+                    </p>
+
+                </div>
+
+
+                <!-- JS will add songs here -->
+
+                <div
+                    id="song-list"
+                    class="song-list"
+                >
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= MIDDLE ================= -->
+
+            <section class="middle-panel">
+
+                <div class="engine-heading">
+
+                    <h1>
+                        SEQUENCE<br>
+                        ENGINE
+                    </h1>
+
+                    <p>
+                        Select an algorithm to restructure
+                        your playlist.
+                    </p>
+
+                </div>
+
+
+                <!-- Algorithm buttons -->
+
+                <div class="algorithm-grid">
+
+
+                    <div class="algorithm-card active" data-preset="romantic">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+
+                        <span>
+                            Romantic
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card" data-preset="energetic">
+                        <span class="material-symbols-outlined">
+                            bolt
+                        </span>
+
+                        <span>
+                            Energetic
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card" data-preset="thrill">
+                        <span class="material-symbols-outlined">
+                            rocket_launch
+                        </span>
+
+                        <span>
+                            Thrill
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card" data-preset="chill">
+                        <span class="material-symbols-outlined">
+                            ac_unit
+                        </span>
+
+                        <span>
+                            Chill
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card" data-preset="feel_good">
+                        <span class="material-symbols-outlined">
+                            sentiment_very_satisfied
+                        </span>
+
+                        <span>
+                            Feel Good
+                        </span>
+                    </div>
+
+
+                    <div class="algorithm-card" data-preset="melancholic">
+                        <span class="material-symbols-outlined">
+                            cloud
+                        </span>
+
+                        <span>
+                            Melancholic
+                        </span>
+                    </div>
+
+
+
+                </div>
+
+
+                <!-- Generate button -->
+
+                <button
+                    id="generate-btn"
+                    class="generate-button"
+                >
+
+                    <span class="material-symbols-outlined">
+                        auto_fix_high
+                    </span>
+
+                    Generate Sequence
+
+                </button>
+
+            </section>
+
+
+
+            <!-- ================= RIGHT ================= -->
+
+            <section class="panel preview-panel">
+
+                <div class="panel-header preview-header">
+
+                    <div>
+
+                        <h2>
+                            Preview: Mood Flow
+                        </h2>
+
+                        <p>
+                            ALGORITHM APPLIED
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- JS will replace this content -->
+
+                <div
+                    id="preview-panel"
+                    class="preview-content"
+                >
+
+                    <div id="mood-grid" class="mood-grid"></div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- Your JavaScript -->
+    <script type="module" src="js/pages/resequence.js"></script>
+
+    <!-- Export-to-Library Modal -->
+    <div id="export-modal" class="export-modal-overlay" hidden>
+        <div class="export-modal-box brutal-border brutal-shadow">
+            <h2 class="export-modal-title">Name Your Playlist</h2>
+            <p class="export-modal-sub">Give your sequenced playlist a name before saving it to your library.</p>
+            <input id="export-name-input" class="export-name-input" type="text" placeholder="e.g. Late Night Vibes" maxlength="60" />
+            <div id="export-error-msg" class="export-error-msg" style="display: none; color: #ff6b9d; font-size: 11px; margin-top: 5px;"></div>
+            <div class="export-modal-actions">
+                <button id="export-cancel-btn" class="export-btn-cancel brutalist-button">Cancel</button>
+                <button id="export-confirm-btn" class="export-btn-confirm brutalist-button">Save to Library</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

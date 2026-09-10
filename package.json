@@ -1,0 +1,16 @@
+{
+  "name": "modus",
+  "version": "1.0.0",
+  "description": "Music feature extraction pipeline for Modus",
+  "type": "module",
+  "scripts": {
+    "extract": "node feature_extraction.js",
+    "serve":   "json-server --watch data/music_features.json --port 3001"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "json-server": "^0.17.4"
+  }
+}

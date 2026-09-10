@@ -8,7 +8,7 @@
 
 const AuthStorage = (() => {
 
-  const USERS_KEY   = 'users';
+  const USERS_KEY   = 'modus_users';
   const SESSION_KEY = 'modus_session';
 
   // ── Helpers ──────────────────────────────────────────────────────────────

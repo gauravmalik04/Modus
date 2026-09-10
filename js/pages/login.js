@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const { user } = Auth.login({ identifier, password });
           showAlert('login', `Welcome back, ${user.username}! Redirecting...`, 'success');
-          setTimeout(() => { window.location.href = 'playlists.html'; }, 600);
+          setTimeout(() => { window.location.href = 'library.html'; }, 600);
         } catch (err) {
           if (err.fields) applyFieldErrors('login-', err.fields);
           showAlert('login', err.message);
