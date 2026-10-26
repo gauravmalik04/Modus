@@ -1,0 +1,42 @@
+{
+  "name": "modus-api",
+  "version": "1.0.0",
+  "description": "Modus Express backend — MVC architecture with MongoDB Atlas",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "node test_phase2_auth.js && node test_phase3_songs.js && node test_phase4_playlists.js && node test_phase5_admin.js && node test_phase6_frontend_integration.js",
+    "test:auth": "node test_phase2_auth.js",
+    "test:songs": "node test_phase3_songs.js",
+    "test:playlists": "node test_phase4_playlists.js",
+    "test:admin": "node test_phase5_admin.js",
+    "test:integration": "node test_phase6_frontend_integration.js",
+    "seed": "node -e \"require('./config/db').connectDB().then(async () => { const fs=require('fs'); const Song=require('./models/Song'); const data=JSON.parse(fs.readFileSync('../data/music_features.json')); for(const s of data.songs) { delete s.id; await Song.upsert(s); } console.log('Database seeded with', data.songs.length, 'songs'); process.exit(0); });\""
+  },
+  "keywords": [
+    "modus",
+    "music",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.4",
+    "morgan": "^1.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
