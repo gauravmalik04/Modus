@@ -50,56 +50,42 @@ The browser loads `music_features.json` directly (no server needed for playback)
 ```
 modus/
 │
-├── feature_extraction.js       # Pipeline entry point (Node.js)
+├── frontend/                   # Static Front-End (HTML/CSS/Vanilla JS)
+│   ├── index.html -> landing.html
+│   ├── landing.html            # Public home page
+│   ├── login.html              # Login / signup / forgot password
+│   ├── library.html            # Auth-guarded library (post-login home)
+│   ├── playlist_view.html      # Playlist detail + track listing
+│   ├── resequence.html         # Sequence engine (mood algorithm + preview)
+│   ├── player.html             # Music player with queue
+│   │
+│   ├── js/                     # Client ES Modules
+│   │   ├── api.js              # Centralized REST client (JWT Bearer, 401 handling)
+│   │   ├── auth.js             # Client auth service
+│   │   ├── validation.js       # Client form validation & strength scoring
+│   │   ├── pages/              # Page controllers (login, library, playlist_view, resequence, player)
+│   │   └── utils/              # playerLauncher.js helper
+│   ├── pipeline/               # Standalone browser sequencer fallback
+│   ├── css/                    # Neo-brutalist / Bauhaus design system styles
+│   └── static/                 # Brand assets & images
 │
-├── pipeline/                   # Back-end modules (Node.js ESM)
-│   ├── FreqBlogClient.js       # API client — bulk-fetches audio features
-│   ├── Song.js                 # Data model + mood preset scoring
-│   ├── SongStore.js            # JSON flat-file database (read/write)
-│   ├── PlaylistSequencer.js    # Greedy nearest-neighbour sequencing engine
-│   └── thresholds.js           # Minimum quality thresholds per preset
+├── backend/                    # Express.js REST API (MVC Architecture)
+│   ├── config/                 # db.js (MongoDB Atlas + dev fallback), env.js
+│   ├── models/                 # Mongoose schemas: User, Song, Playlist
+│   ├── controllers/            # HTTP handlers: auth, song, playlist, admin
+│   ├── services/               # Business logic: auth, song, playlist
+│   ├── middleware/             # auth (JWT protect), error, validate (express-validator)
+│   ├── pipeline/               # PlaylistSequencer.js, thresholds.js, FreqBlogClient.js
+│   ├── routes/                 # Express router mounts (/api/auth, /api/songs, etc.)
+│   ├── server.js               # Express entry point (cors, helmet, rate-limit, morgan)
+│   └── package.json            # Backend scripts: start, dev, test, seed
 │
 ├── data/
-│   └── music_features.json     # Persisted song database (pipeline output)
+│   └── music_features.json     # 20 curated tracks with full audio profiles
 │
-├── js/                         # Front-end ES Modules
-│   ├── Playlist.js             # Playlist model + topMood / duration getters
-│   ├── libraryStore.js         # localStorage store for user-saved playlists
-│   ├── auth.js                 # Auth business logic (login / signup / recovery)
-│   ├── storage.js              # AuthStorage — users in localStorage, session in sessionStorage
-│   ├── validation.js           # Pure form validation (Validator IIFE)
-│   ├── sequencer.js            # Front-end sequencer bridge (json-server path)
-│   │
-│   ├── pages/
-│   │   ├── landing.js          # Landing page interactive demo
-│   │   ├── login.js            # Login / signup / forgot-password form controller
-│   │   ├── library.js          # Auth-guarded library — shows saved playlists
-│   │   ├── playlist_view.js    # Playlist detail view + track list + play button
-│   │   ├── resequence.js       # Three-panel sequence engine UI
-│   │   └── player.js           # Full-screen player with transport controls
-│   │
-│   └── utils/
-│       └── playerLauncher.js   # Shared helper — writes queue to sessionStorage & navigates to player.html
-│
-├── css/
-│   ├── landing.css             # Bauhaus design system + landing page styles
-│   ├── login.css               # Login/signup form styles
-│   ├── library.css             # Library grid and card styles
-│   └── resequence.css          # Three-panel sequence engine styles
-│
-├── static/
-│   ├── logo.png
-│   └── hero_image.png
-│
-├── landing.html                # Public home page
-├── login.html                  # Login / signup / forgot password
-├── library.html                # Auth-guarded library (post-login home)
-├── playlist_view.html          # Playlist detail + track listing
-├── resequence.html             # Sequence engine (mood algorithm + preview)
-├── player.html                 # Music player with queue
-│
-├── package.json                # npm scripts: extract, serve
-└── .env                        # FREQBLOG_API_KEY (required for pipeline)
+├── .env.example                # Environment variables template
+├── vercel.json                 # Vercel deployment rewrites for static frontend
+└── package.json                # Project root metadata
 ```
 
 ---
@@ -354,43 +340,52 @@ Session is stored as `{ id, username, email }` in `sessionStorage['modus_session
 ### Prerequisites
 
 - Node.js ≥ 18
-- A FreqBlog API key (only needed to re-run the pipeline)
+- MongoDB Atlas cluster or local MongoDB (`mongodb://127.0.0.1:27017`)
 
-### 1 — Install dependencies
+### 1 — Backend Setup
 
 ```bash
+# Navigate to backend
+cd backend
+
+# Install dependencies
 npm install
+
+# Configure environment
+cp ../.env.example ../.env
+
+# Seed MongoDB with catalog tracks
+npm run seed
+
+# Run the 57-test automated verification suite
+npm test
+
+# Start the API server
+npm run dev
 ```
 
-### 2 — (Optional) Re-run the feature extraction pipeline
+The Express API will be running on `http://localhost:5000/api`.
 
-Add your `FREQBLOG_API_KEY` to `.env`:
+### 2 — Frontend Setup
 
-```
-FREQBLOG_API_KEY=your_key_here
-```
-
-Add songs to the `SONGS` array in `feature_extraction.js`, then run:
+Serve the `frontend/` directory using any static web server (such as VS Code Live Server or `npx serve`):
 
 ```bash
-npm run extract
+# From the project root
+npx serve frontend -p 5500
 ```
 
-This populates / updates `data/music_features.json`.
+Open `http://localhost:5500` in your browser.
 
-### 3 — Open the app
+### 3 — Sign Up & Explore
 
-Open `landing.html` in a browser via VS Code Live Server or any static file server. No build step is required.
-
-> **Tip:** To use the json-server-backed sequencer bridge (`js/sequencer.js`), run `npm run serve` to expose `http://localhost:3001/songs`.
-
-### 4 — Sign up and explore
-
-1. Click **Get Started** on the landing page → create an account on `login.html`
-2. Browse your library → click a playlist card
-3. Hit **Play** to open the player, or **Re-Sequence** to choose a mood algorithm and generate a new sequence
-4. Export a generated sequence back to your library with a custom name
+1. Click **Get Started** on the landing page → create an account on `login.html`.
+2. Browse your library → click **Create Starter Playlist** to populate your library with catalog songs.
+3. Click a playlist card to view full track details and computed mood scores.
+4. Hit **Re-Sequence** to choose an emotional preset and generate a Camelot-wheel harmonic sequence.
+5. Export your generated sequence back to your library with a custom name.
+6. Hit **Play** to launch the Now Playing player with transport controls and queue management.
 
 ---
 
-*Last updated: September 2026*
+*Last updated: October 2026*

@@ -4,13 +4,13 @@
   "description": "Music feature extraction pipeline for Modus",
   "type": "module",
   "scripts": {
-    "extract": "node feature_extraction.js",
-    "serve":   "json-server --watch data/music_features.json --port 3001"
+    "start": "npm --prefix backend start",
+    "dev": "npm --prefix backend run dev",
+    "test": "npm --prefix backend test",
+    "seed": "npm --prefix backend run seed",
+    "extract": "node feature_extraction.js"
   },
   "dependencies": {
     "dotenv": "^16.0.0"
-  },
-  "devDependencies": {
-    "json-server": "^0.17.4"
   }
 }
