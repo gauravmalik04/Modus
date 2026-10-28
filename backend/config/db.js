@@ -1,45 +1,58 @@
 /**
  * backend/config/db.js
  *
- * MongoDB Atlas connection via Mongoose.
- * Call connectDB() once from server.js on startup.
+ * MongoDB Atlas connection with connection caching for Vercel.
  */
 
 'use strict';
 
 const mongoose = require('mongoose');
-const env      = require('./env');
+const env = require('./env');
 
-/**
- * Connect to MongoDB Atlas.
- * Exits the process on failure so the server never starts in a broken state.
- */
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = {
+        conn: null,
+        promise: null,
+    };
+}
+
 async function connectDB() {
-    try {
-        const conn = await mongoose.connect(env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000,
-        });
+    // Reuse an existing connection.
+    if (cached.conn && mongoose.connection.readyState === 1) {
+        return cached.conn;
+    }
 
-        console.log(`[DB] MongoDB connected: ${conn.connection.host}`);
-    } catch (err) {
-        if (env.isDev() && env.MONGODB_URI.includes('mongodb.net')) {
-            console.warn('[DB] Atlas connection failed (likely IP whitelist). Attempting local MongoDB fallback...');
-            try {
-                const localConn = await mongoose.connect('mongodb://127.0.0.1:27017/modus', {
-                    serverSelectionTimeoutMS: 3000,
-                });
-                console.log(`[DB] Connected to local MongoDB fallback: ${localConn.connection.host}`);
-                return;
-            } catch (localErr) {
-                console.error('[DB] Local fallback also failed:', localErr.message);
-            }
+    // Reuse an in-progress connection attempt.
+    if (!cached.promise) {
+        if (!env.MONGODB_URI) {
+            throw new Error('MONGODB_URI environment variable is missing');
         }
+
+        cached.promise = mongoose.connect(env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 10000,
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+
+        console.log(
+            `[DB] MongoDB connected: ${cached.conn.connection.host}`
+        );
+
+        return cached.conn;
+    } catch (err) {
+        cached.promise = null;
+        cached.conn = null;
+
         console.error('[DB] Connection failed:', err.message);
-        process.exit(1);
+
+        throw err;
     }
 }
 
-// Optionally log connection events for visibility
 mongoose.connection.on('disconnected', () => {
     console.warn('[DB] MongoDB disconnected.');
 });
