@@ -11,7 +11,7 @@
  *   - Supports both ES module `import { api } from ...` and global `window.api`
  */
 
-const API_BASE = 'https://modus-ygx3.vercel.app/api';
+const API_BASE = 'https://modus-ygx3.vercel.app';
 
 const TOKEN_KEY = 'modus_token';
 const USER_KEY  = 'modus_user';
