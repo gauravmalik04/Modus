@@ -134,33 +134,33 @@ export const api = {
     logout,
 
     // ── Auth ──────────────────────────────────────────────────────────────────
-    signup: (body) => apiRequest('POST', '/auth/signup', body),
-    login:  (body) => apiRequest('POST', '/auth/login', body),
-    me:     ()     => apiRequest('GET',  '/auth/me'),
-    forgotPassword: (body) => apiRequest('POST', '/auth/forgot-password', body),
+    signup: (body) => apiRequest('POST', '/api/auth/signup', body),
+    login:  (body) => apiRequest('POST', '/api/auth/login', body),
+    me:     ()     => apiRequest('GET',  '/api/auth/me'),
+    forgotPassword: (body) => apiRequest('POST', '/api/auth/forgot-password', body),
 
     // ── Songs ─────────────────────────────────────────────────────────────────
-    getSongs:   (q = '', limit = 20) => apiRequest('GET', `/songs?q=${encodeURIComponent(q)}&limit=${limit}`),
-    getSong:    (id)                 => apiRequest('GET', `/songs/${id}`),
-    searchSong: (body)               => apiRequest('POST', '/songs/search', body),
-    bulkSongs:  (tracks)             => apiRequest('POST', '/songs/bulk', { tracks }),
+    getSongs:   (q = '', limit = 20) => apiRequest('GET', `/api/songs?q=${encodeURIComponent(q)}&limit=${limit}`),
+    getSong:    (id)                 => apiRequest('GET', `/api/songs/${id}`),
+    searchSong: (body)               => apiRequest('POST', '/api/songs/search', body),
+    bulkSongs:  (tracks)             => apiRequest('POST', '/api/songs/bulk', { tracks }),
 
     // ── Playlists ─────────────────────────────────────────────────────────────
-    getPlaylists:   ()          => apiRequest('GET', '/playlists'),
-    getPlaylist:    (id)        => apiRequest('GET', `/playlists/${id}`),
-    createPlaylist: (body)      => apiRequest('POST', '/playlists', body),
-    updatePlaylist: (id, body)  => apiRequest('PUT', `/playlists/${id}`, body),
-    deletePlaylist: (id)        => apiRequest('DELETE', `/playlists/${id}`),
+    getPlaylists:   ()          => apiRequest('GET', '/api/playlists'),
+    getPlaylist:    (id)        => apiRequest('GET', `/api/playlists/${id}`),
+    createPlaylist: (body)      => apiRequest('POST', '/api/playlists', body),
+    updatePlaylist: (id, body)  => apiRequest('PUT', `/api/playlists/${id}`, body),
+    deletePlaylist: (id)        => apiRequest('DELETE', `/api/playlists/${id}`),
 
-    addSong:    (playlistId, songId) => apiRequest('POST', `/playlists/${playlistId}/songs`, { songId }),
-    removeSong: (playlistId, songId) => apiRequest('DELETE', `/playlists/${playlistId}/songs/${songId}`),
+    addSong:    (playlistId, songId) => apiRequest('POST', `/api/playlists/${playlistId}/songs`, { songId }),
+    removeSong: (playlistId, songId) => apiRequest('DELETE', `/api/playlists/${playlistId}/songs/${songId}`),
 
-    resequence: (id, algorithm)      => apiRequest('POST', `/playlists/${id}/resequence`, { algorithm }),
+    resequence: (id, algorithm)      => apiRequest('POST', `/api/playlists/${id}/resequence`, { algorithm }),
     exportSequence: (idOrBody, maybeBody) => {
         if (typeof idOrBody === 'string' && idOrBody.trim().length > 0 && maybeBody) {
-            return apiRequest('POST', `/playlists/${idOrBody.trim()}/export`, maybeBody);
+            return apiRequest('POST', `/api/playlists/${idOrBody.trim()}/export`, maybeBody);
         }
-        return apiRequest('POST', '/playlists/export', maybeBody || idOrBody);
+        return apiRequest('POST', '/api/playlists/export', maybeBody || idOrBody);
     },
 };
 
