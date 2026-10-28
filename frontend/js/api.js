@@ -11,19 +11,7 @@
  *   - Supports both ES module `import { api } from ...` and global `window.api`
  */
 
-const API_BASE = (function () {
-    if (typeof window !== 'undefined' && window.MODUS_API_BASE) {
-        return window.MODUS_API_BASE;
-    }
-    if (typeof window !== 'undefined') {
-        const host = window.location.hostname;
-        if (host === 'localhost' || host === '127.0.0.1') {
-            return 'http://localhost:5000/api';
-        }
-    }
-    // Deployed production default
-    return 'https://modus-api.onrender.com/api';
-})();
+const API_BASE = 'https://modus-ygx3.vercel.app/api';
 
 const TOKEN_KEY = 'modus_token';
 const USER_KEY  = 'modus_user';
