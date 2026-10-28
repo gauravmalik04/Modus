@@ -38,7 +38,7 @@ function optional_env(name, defaultValue = '') {
 }
 
 const env = {
-    NODE_ENV:     optional_env('NODE_ENV', 'development'),
+    NODE_ENV:     optional_env('NODE_ENV', 'production'),
     PORT:         parseInt(optional_env('PORT', '5000'), 10),
 
     // MongoDB Atlas
