@@ -119,22 +119,40 @@ app.use((req, res) => {
 app.use(errorMiddleware);
 
 // ── Start Server ──────────────────────────────────────────────────────────────
+// ── Database initialization for requests ──────────────────────────────────────
+
+// Ensure MongoDB is connected before any route accesses the database.
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error('[API] Database initialization failed:', error.message);
+
+        res.status(503).json({
+            success: false,
+            message: 'Database temporarily unavailable',
+        });
+    }
+});
+
+// ── Local server startup ──────────────────────────────────────────────────────
 async function start() {
-    // Connect to MongoDB first — exits process on failure
     await connectDB();
 
     app.listen(env.PORT, () => {
-        console.log(`\n🎵  Modus API running`);
-        console.log(`   Environment : ${env.NODE_ENV}`);
-        console.log(`   Port        : ${env.PORT}`);
-        console.log(`   Client      : ${env.CLIENT_ORIGIN}`);
-        console.log(`   Health      : http://localhost:${env.PORT}/health\n`);
+        console.log(`Modus API running on port ${env.PORT}`);
     });
 }
 
-if (require.main === module) {
-    start();
-}
-
+// Vercel imports and serves the exported Express application.
 module.exports = app;
 module.exports.start = start;
+
+// Start the HTTP server only when executed directly.
+if (require.main === module) {
+    start().catch((error) => {
+        console.error('[API] Startup failed:', error.message);
+        process.exitCode = 1;
+    });
+}
