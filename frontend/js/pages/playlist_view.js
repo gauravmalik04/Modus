@@ -112,6 +112,22 @@ async function init() {
         currentPlaylist = res.playlist;
         currentSongs    = Array.isArray(res.songs) ? res.songs : (res.playlist.songs || []);
 
+        // If Dummy Playlist is viewed and has 0 songs, populate with catalog songs
+        if ((currentPlaylist.name === 'Dummy Playlist' || currentPlaylist.isDefault) && currentSongs.length === 0) {
+            try {
+                const songsData = await api.getSongs('', 50);
+                const sIds = (songsData.songs || []).map(s => s._id || s.id);
+                for (const sId of sIds) {
+                    try { await api.addSong(currentPlaylist._id || currentPlaylist.id, sId); } catch (e) {}
+                }
+                const refreshed = await api.getPlaylist(currentPlaylist._id || currentPlaylist.id);
+                currentPlaylist = refreshed.playlist || currentPlaylist;
+                currentSongs = Array.isArray(refreshed.songs) ? refreshed.songs : (refreshed.playlist?.songs || []);
+            } catch (e) {
+                console.warn('PlaylistView: Could not auto-populate Dummy Playlist songs:', e);
+            }
+        }
+
         if (deleteBtn && !currentPlaylist.isDefault) {
             deleteBtn.classList.remove('hidden');
         }

@@ -15,6 +15,7 @@ const Playlist           = require('../models/Playlist');
 const Song               = require('../models/Song');
 const PlaylistSequencer  = require('../pipeline/PlaylistSequencer');
 const { PRESET_KEYS }    = require('../models/Playlist');
+const { ensureSongsSeeded } = require('./seed.service');
 const ApiError           = require('../utils/ApiError');
 
 function escapeRegex(str) {
@@ -29,6 +30,42 @@ function escapeRegex(str) {
  * @returns {Promise<Array<object>>}
  */
 async function getUserPlaylists(userId) {
+    // Check if user already has a Dummy Playlist
+    let dummy = await Playlist.findOne({
+        userId,
+        $or: [{ name: 'Dummy Playlist' }, { isDefault: true }],
+    }).populate('songs');
+
+    // If dummy doesn't exist OR dummy has 0 songs: populate with the 20 demo songs
+    if (!dummy || !dummy.songs || dummy.songs.length === 0) {
+        try {
+            await ensureSongsSeeded();
+            const catalogSongs = await Song.find().sort({ createdAt: 1 }).limit(20);
+            const songIds = catalogSongs.map(s => s._id);
+
+            if (songIds.length > 0) {
+                if (!dummy) {
+                    dummy = new Playlist({
+                        userId,
+                        name: 'Dummy Playlist',
+                        description: 'Default curated starter playlist — ready to sequence.',
+                        coverImage: 'static/hero_image.png',
+                        tags: ['Mix', 'Default', 'Demo'],
+                        isDefault: true,
+                        songs: songIds,
+                    });
+                } else {
+                    dummy.songs = songIds;
+                }
+                await dummy.populate('songs');
+                await Playlist.updateStats(dummy);
+                await dummy.save();
+            }
+        } catch (e) {
+            console.error('[PlaylistService] Could not auto-populate Dummy Playlist:', e.message);
+        }
+    }
+
     const playlists = await Playlist.find({ userId })
         .populate('songs')
         .sort({ createdAt: -1 });
@@ -53,6 +90,22 @@ async function getPlaylistById(playlistId, userId) {
 
     if (!playlist) {
         throw ApiError.notFound('Playlist not found.');
+    }
+
+    // Auto-populate Dummy Playlist if empty
+    if ((playlist.name === 'Dummy Playlist' || playlist.isDefault) && (!playlist.songs || playlist.songs.length === 0)) {
+        try {
+            await ensureSongsSeeded();
+            const catalogSongs = await Song.find().sort({ createdAt: 1 }).limit(20);
+            if (catalogSongs.length > 0) {
+                playlist.songs = catalogSongs.map(s => s._id);
+                await playlist.populate('songs');
+                await Playlist.updateStats(playlist);
+                await playlist.save();
+            }
+        } catch (e) {
+            console.error('[PlaylistService] Could not populate Dummy Playlist on getById:', e.message);
+        }
     }
 
     return {
@@ -285,7 +338,21 @@ async function resequencePlaylist(playlistId, userId, algorithm) {
     }
 
     if (!playlist.songs || playlist.songs.length === 0) {
-        return { sequence: [], algorithm: algo, count: 0 };
+        if (playlist.name === 'Dummy Playlist' || playlist.isDefault) {
+            try {
+                await ensureSongsSeeded();
+                const catalogSongs = await Song.find().sort({ createdAt: 1 }).limit(20);
+                if (catalogSongs.length > 0) {
+                    playlist.songs = catalogSongs.map(s => s._id);
+                    await playlist.populate('songs');
+                    await Playlist.updateStats(playlist);
+                    await playlist.save();
+                }
+            } catch (e) {}
+        }
+        if (!playlist.songs || playlist.songs.length === 0) {
+            return { sequence: [], algorithm: algo, count: 0 };
+        }
     }
 
     // Convert Mongoose song docs to plain JSON objects for the sequencer

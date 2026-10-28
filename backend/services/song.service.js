@@ -16,6 +16,7 @@ const mongoose         = require('mongoose');
 const Song             = require('../models/Song');
 const { Song: PipelineSong } = require('../pipeline/Song');
 const { bulkGetFeatures }    = require('../pipeline/FreqBlogClient');
+const { ensureSongsSeeded }  = require('./seed.service');
 const ApiError         = require('../utils/ApiError');
 const env              = require('../config/env');
 
@@ -33,9 +34,13 @@ function escapeRegex(str) {
  */
 async function searchSongs(query, limit = 20) {
     const lim = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
+    const count = await Song.countDocuments();
+    if (count < 20) {
+        await ensureSongsSeeded();
+    }
     if (!query || !query.trim()) {
-        // Return most recent songs if no query provided
-        return Song.find({}).sort({ createdAt: -1 }).limit(lim).lean();
+        // Return catalog songs if no query provided
+        return Song.find({}).sort({ createdAt: 1 }).limit(lim).lean();
     }
     return Song.search(query.trim(), lim);
 }

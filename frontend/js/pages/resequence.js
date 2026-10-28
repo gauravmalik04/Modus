@@ -38,15 +38,25 @@ let userPlaylists     = [];
 // HELPER: ENSURE DUMMY PLAYLIST
 // ======================================================
 
-async function ensureDummyPlaylist() {
+async function ensureDummyPlaylist(existingDummy = null) {
     try {
-        const songsData = await api.getSongs('', 50);
-        const songIds = (songsData.songs || []).map(s => s._id);
+        let songsData = await api.getSongs('', 50);
+        let songIds = (songsData.songs || []).map(s => s._id || s.id);
+
+        if (existingDummy) {
+            const dummyId = existingDummy._id || existingDummy.id;
+            for (const sId of songIds) {
+                try { await api.addSong(dummyId, sId); } catch (e) {}
+            }
+            const refreshed = await api.getPlaylist(dummyId);
+            return refreshed.playlist || refreshed;
+        }
+
         const res = await api.createPlaylist({
             name: 'Dummy Playlist',
             description: 'Default curated starter playlist — ready to sequence.',
             coverImage: 'static/hero_image.png',
-            tags: ['Mix', 'Default'],
+            tags: ['Mix', 'Default', 'Demo'],
             isDefault: true,
             songIds,
         });
@@ -78,10 +88,17 @@ async function loadSongs() {
 
         // Find or ensure Dummy Playlist
         let dummy = userPlaylists.find(p => p.name === 'Dummy Playlist' || p.isDefault);
-        if (!dummy) {
-            dummy = await ensureDummyPlaylist();
+        const dummySongsCount = dummy ? (dummy.songs?.length || dummy.trackCount || 0) : 0;
+        if (!dummy || dummySongsCount === 0) {
+            dummy = await ensureDummyPlaylist(dummySongsCount === 0 && dummy ? dummy : null);
             if (dummy) {
-                userPlaylists.unshift(dummy);
+                const dummyId = dummy._id || dummy.id;
+                const idx = userPlaylists.findIndex(p => (p._id || p.id) === dummyId);
+                if (idx !== -1) {
+                    userPlaylists[idx] = dummy;
+                } else {
+                    userPlaylists.unshift(dummy);
+                }
             }
         }
 
@@ -117,10 +134,21 @@ async function loadSongs() {
             }
         }
 
-        // If no playlist or playlist has no songs, load global catalog songs
+        // If no playlist or playlist has no songs, load global catalog songs or local demo songs
         if (!songs || songs.length === 0) {
-            const catalog = await api.getSongs('', 50);
-            songs = Array.isArray(catalog.songs) ? catalog.songs : [];
+            try {
+                const catalog = await api.getSongs('', 50);
+                songs = Array.isArray(catalog.songs) ? catalog.songs : [];
+            } catch (e) {}
+        }
+        if (!songs || songs.length === 0) {
+            try {
+                const localRes = await fetch('data/music_features.json');
+                if (localRes.ok) {
+                    const localJson = await localRes.json();
+                    songs = Array.isArray(localJson.songs) ? localJson.songs : [];
+                }
+            } catch (e) {}
         }
 
         console.log("Songs Loaded for Sequence Engine:", songs.length);

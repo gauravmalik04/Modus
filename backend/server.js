@@ -123,6 +123,8 @@ app.use(async (req, res, next) => {
     }
     try {
         await connectDB();
+        const { ensureSongsSeeded } = require('./services/seed.service');
+        ensureSongsSeeded().catch(() => {});
         next();
     } catch (error) {
         console.error('[API] Database initialization failed:', error.message);

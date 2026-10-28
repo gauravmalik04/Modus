@@ -46,20 +46,34 @@ async function init() {
 
         // Ensure Dummy Playlist exists for every user
         let dummy = allPlaylists.find(p => p.name === 'Dummy Playlist' || p.isDefault);
-        if (!dummy) {
+        const dummySongsCount = dummy ? (dummy.songs?.length || dummy.trackCount || 0) : 0;
+        if (!dummy || dummySongsCount === 0) {
             try {
                 const songsData = await api.getSongs('', 50);
                 const songIds = (songsData.songs || []).map(s => s._id);
-                const dummyRes = await api.createPlaylist({
-                    name: 'Dummy Playlist',
-                    description: 'Default curated starter playlist — ready to sequence.',
-                    coverImage: DEFAULT_COVER,
-                    tags: ['Mix', 'Default'],
-                    isDefault: true,
-                    songIds,
-                });
-                dummy = dummyRes.playlist || dummyRes;
-                allPlaylists.unshift(dummy);
+                if (songIds.length > 0) {
+                    if (!dummy) {
+                        const dummyRes = await api.createPlaylist({
+                            name: 'Dummy Playlist',
+                            description: 'Default curated starter playlist — ready to sequence.',
+                            coverImage: DEFAULT_COVER,
+                            tags: ['Mix', 'Default', 'Demo'],
+                            isDefault: true,
+                            songIds,
+                        });
+                        dummy = dummyRes.playlist || dummyRes;
+                        allPlaylists.unshift(dummy);
+                    } else if (dummySongsCount === 0) {
+                        const dummyId = dummy._id || dummy.id;
+                        for (const sId of songIds) {
+                            try { await api.addSong(dummyId, sId); } catch (e) {}
+                        }
+                        const refreshed = await api.getPlaylist(dummyId);
+                        dummy = refreshed.playlist || refreshed;
+                        const idx = allPlaylists.findIndex(p => (p._id || p.id) === dummyId);
+                        if (idx !== -1) allPlaylists[idx] = dummy;
+                    }
+                }
             } catch (err) {
                 console.warn('Library: Could not create Dummy Playlist:', err);
             }
