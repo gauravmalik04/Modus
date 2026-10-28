@@ -11,7 +11,26 @@
  *   - Supports both ES module `import { api } from ...` and global `window.api`
  */
 
-const API_BASE = 'https://modus-ygx3.vercel.app';
+function resolveApiBase() {
+    if (typeof window !== 'undefined' && window.MODUS_API_BASE) {
+        return window.MODUS_API_BASE.replace(/\/+$/, '');
+    }
+    if (typeof window !== 'undefined') {
+        const { hostname, port } = window.location;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return port === '5000' ? '' : 'http://localhost:5000';
+        }
+        // If frontend is on the same domain as backend (modus-ygx3 or unified deploy), use relative paths
+        if (hostname.includes('modus-ygx3')) {
+            return '';
+        }
+        // Fallback for cross-domain frontend deployment (e.g. modus-pearl.vercel.app)
+        return 'https://modus-ygx3.vercel.app';
+    }
+    return 'https://modus-ygx3.vercel.app';
+}
+
+const API_BASE = resolveApiBase();
 
 const TOKEN_KEY = 'modus_token';
 const USER_KEY  = 'modus_user';
@@ -88,6 +107,7 @@ async function apiRequest(method, path, body = null) {
             body: body ? JSON.stringify(body) : null,
         });
     } catch (networkErr) {
+        console.error('[Modus API] Connection failed:', networkErr, 'URL:', url);
         const err = new Error('Unable to connect to Modus server. Please ensure the backend is running.');
         err.status = 0;
         err.network = true;

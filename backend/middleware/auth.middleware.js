@@ -32,6 +32,9 @@ async function protect(req, res, next) {
         }
 
         // 2. Verify + decode
+        if (!env.JWT_SECRET) {
+            throw ApiError.internal('JWT_SECRET is not configured in environment variables.');
+        }
         const decoded = jwt.verify(token, env.JWT_SECRET);
 
         // 3. Attach decoded payload to request
@@ -69,7 +72,10 @@ function adminOnly(req, res, next) {
     if (authHeader && authHeader.startsWith('Bearer ')) {
         try {
             const token = authHeader.split(' ')[1];
-            const decoded = jwt.verify(token, env.JWT_SECRET);
+            if (!env.JWT_SECRET) {
+            throw ApiError.internal('JWT_SECRET is not configured in environment variables.');
+        }
+        const decoded = jwt.verify(token, env.JWT_SECRET);
             if (decoded && decoded.role === 'admin') {
                 req.user = decoded;
                 return next();

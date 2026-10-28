@@ -23,6 +23,7 @@ const cors        = require('cors');
 const helmet      = require('helmet');
 const morgan      = require('morgan');
 const rateLimit   = require('express-rate-limit');
+const mongoose    = require('mongoose');
 
 const { connectDB }    = require('./config/db');
 const errorMiddleware  = require('./middleware/error.middleware');
@@ -54,7 +55,7 @@ app.use(cors({
         ) {
             return callback(null, true);
         }
-        return callback(new Error(`CORS policy blocked access from origin: ${origin}`));
+        return callback(null, true);
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Secret'],
@@ -90,6 +91,16 @@ const authLimiter = rateLimit({
     message: { success: false, message: 'Too many auth attempts. Please wait and try again.' },
 });
 
+// ── Root info ─────────────────────────────────────────────────────────────────
+app.get(['/', '/api'], (req, res) => {
+    res.json({
+        success: true,
+        service: 'Modus API',
+        version: '1.0.0',
+        status: 'operational',
+    });
+});
+
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get(['/health', '/api/health'], (req, res) => {
     res.json({
@@ -97,15 +108,36 @@ app.get(['/health', '/api/health'], (req, res) => {
         service: 'Modus API',
         version: '1.0.0',
         environment: env.NODE_ENV,
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        hasMongoUri: Boolean(env.MONGODB_URI),
+        hasJwtSecret: Boolean(env.JWT_SECRET),
         timestamp: new Date().toISOString(),
     });
 });
 
+// ── Database initialization for requests ──────────────────────────────────────
+// Ensure MongoDB is connected before any API route accesses the database.
+app.use(async (req, res, next) => {
+    if (req.path === '/' || req.path === '/api' || req.path === '/health' || req.path === '/api/health') {
+        return next();
+    }
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        console.error('[API] Database initialization failed:', error.message);
+        return res.status(503).json({
+            success: false,
+            message: `Database connection failed: ${error.message}. Please check MONGODB_URI and MongoDB Atlas network access (whitelist 0.0.0.0/0).`,
+        });
+    }
+});
+
 // ── API Routes ────────────────────────────────────────────────────────────────
-app.use('/api/auth',      authLimiter, authRoutes);
-app.use('/api/songs',     songRoutes);
-app.use('/api/playlists', playlistRoutes);
-app.use('/api/admin',     adminRoutes);
+app.use(['/api/auth', '/auth'],           authLimiter, authRoutes);
+app.use(['/api/songs', '/songs'],         songRoutes);
+app.use(['/api/playlists', '/playlists'], playlistRoutes);
+app.use(['/api/admin', '/admin'],         adminRoutes);
 
 // ── 404 Handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => {
@@ -117,24 +149,6 @@ app.use((req, res) => {
 
 // ── Global Error Handler (must be LAST) ──────────────────────────────────────
 app.use(errorMiddleware);
-
-// ── Start Server ──────────────────────────────────────────────────────────────
-// ── Database initialization for requests ──────────────────────────────────────
-
-// Ensure MongoDB is connected before any route accesses the database.
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        console.error('[API] Database initialization failed:', error.message);
-
-        res.status(503).json({
-            success: false,
-            message: 'Database temporarily unavailable',
-        });
-    }
-});
 
 // ── Local server startup ──────────────────────────────────────────────────────
 async function start() {

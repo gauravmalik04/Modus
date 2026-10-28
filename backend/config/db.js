@@ -31,7 +31,8 @@ async function connectDB() {
         }
 
         cached.promise = mongoose.connect(env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 10000,
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 5000,
         });
     }
 
